@@ -56,6 +56,8 @@ import javafx.scene.text.Font;
 import javafx.scene.text.TextAlignment;
 import javafx.stage.Stage;
 
+// TEST COMMENT
+
 /**
  * Main Milk weight application driver
  * 
