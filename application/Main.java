@@ -31,8 +31,8 @@ import javafx.stage.Stage;
 public class Main extends Application {
   private List<String> args;
 
-  private static final int WINDOW_WIDTH = 1150;
-  private static final int WINDOW_HEIGHT = 500;
+  private static final int WINDOW_WIDTH = 1400;
+  private static final int WINDOW_HEIGHT = 800;
   private static final String APP_TITLE = "Milk Weight App";
 
   @Override
@@ -41,7 +41,7 @@ public class Main extends Application {
     Label tile = new Label("milk weights");
     root.setTop(tile);
 
-    String[] options = {"input data", "get reports"};
+    String[] options = {"Load/Save Data", "Filter Data","Get Report"};
     ComboBox<String> comboBox = new ComboBox<String>(FXCollections.observableArrayList(options));
 
     comboBox.valueProperty().addListener(new ChangeListener<String>() {
@@ -54,8 +54,9 @@ public class Main extends Application {
           Label label = new Label("button not selected");
           // final TextField in = new TextField("enter input data");
           // root.setCenter(new TilePane(in));
-          Button rightButton = new Button("Press here");
-          EventHandler<ActionEvent> event = new EventHandler<ActionEvent>() {
+          Button loadButton = new Button("Load Data");
+          Button saveButton = new Button("Save to file");
+          EventHandler<ActionEvent> loadEvent = new EventHandler<ActionEvent>() {
 
             /**
              * event that will happen when button is pressed
@@ -63,22 +64,43 @@ public class Main extends Application {
             @Override
             public void handle(ActionEvent e) {
               GridPane grid = new GridPane();
-              label.setText("this is my first Event");
-              final TextField in = new TextField();
-              in.setPromptText("Enter path to data");
-              GridPane.setConstraints(in, 0, 0);
-              grid.getChildren().add(in);
+              //label.setText("this is my first Event");
+              Label inputManualLabel = new Label("Input manually");
+              final TextField milkWeight = new TextField();
+              milkWeight.setPromptText("Enter milk weight");
+              GridPane.setConstraints(milkWeight, 0, 1);
+              GridPane.setConstraints(inputManualLabel, 0, 0);
+              grid.getChildren().add(milkWeight);
+              grid.getChildren().add(inputManualLabel);
 
               // set comment text field
-              final TextField comment = new TextField();
-              comment.setPrefColumnCount(15);
-              comment.setPromptText("Enter farm name");
-              GridPane.setConstraints(comment, 0, 2);
-              grid.getChildren().add(comment);
+              final TextField farmName = new TextField();
+              farmName.setPrefColumnCount(15);
+              farmName.setPromptText("Enter farm name");
+              GridPane.setConstraints(farmName, 0, 3);
+              grid.getChildren().add(farmName);
+              
+              // set comment text field
+              final TextField date = new TextField();
+              date.setPrefColumnCount(15);
+              date.setPromptText("mm/dd/yyy");
+              GridPane.setConstraints(date, 0, 4);
+              grid.getChildren().add(date);
+              
+  
 
               // Defining the Submit button
               Button submit = new Button("Enter");
-              GridPane.setConstraints(submit, 1, 0);
+              GridPane.setConstraints(submit, 0, 5);
+              
+              Label browseFromFileLabel = new Label("Browse from file");
+              GridPane.setConstraints(browseFromFileLabel, 0, 6);
+              grid.getChildren().add(browseFromFileLabel);
+              Button openFile = new Button("Browse File");
+              grid.getChildren().add(openFile);
+              GridPane.setConstraints(openFile, 0, 7);
+              
+              
 
               // add action to submit button
               submit.setOnAction(new EventHandler<ActionEvent>() {
@@ -92,10 +114,10 @@ public class Main extends Application {
                   grid.getChildren().add(outputLabel);
                   grid.getChildren().add(dataLabel);
 
-                  if (in.getText() != null && !in.getText().isEmpty()) {
-                    dataLabel.setText("data entered: " + in.getText());
-                    if (comment.getText() != null && !comment.getText().isEmpty()) {
-                      outputLabel.setText("farm entered: " + comment.getText());
+                  if (milkWeight.getText() != null && !milkWeight.getText().isEmpty()) {
+                    dataLabel.setText("data entered: " + milkWeight.getText());
+                    if (farmName.getText() != null && !farmName.getText().isEmpty()) {
+                      outputLabel.setText("farm entered: " + farmName.getText());
                     } else {
                       outputLabel.setText("data is invalid");
                     }
@@ -107,32 +129,154 @@ public class Main extends Application {
 
                 }
               });
+              
               grid.getChildren().add(submit);
-              root.setCenter(grid);
+              root.setRight(grid);
             }
           };
 
-          rightButton.setOnAction(event);
+          loadButton.setOnAction(loadEvent);
           VBox vb = new VBox();
           vb.setPadding(new Insets(10));
-          vb.getChildren().add(label);
-          vb.getChildren().add(rightButton);
-          actionPane.getChildren().add(rightButton);
-          actionPane.getChildren().add(label);
+          vb.getChildren().add(loadButton);
+          vb.getChildren().add(saveButton);
+          actionPane.getChildren().add(loadButton);
+          actionPane.getChildren().add(saveButton);
 
           // add to root
           root.setRight(actionPane);
-        } else if (arg.getValue() == options[1]) {
-          System.out.println("");
+        } else if (arg.getValue() == options[1]) { // Filter Data
+          
+          GridPane grid = new GridPane();
+          
+          Label onlyShowLabel = new Label("Only show farms:");
+          GridPane.setConstraints(onlyShowLabel, 0, 0);
+          grid.getChildren().add(onlyShowLabel);
+          
+          // set comment text field
+          final TextField fromFarm = new TextField();
+          fromFarm.setPrefColumnCount(15);
+          fromFarm.setPromptText("From");
+          GridPane.setConstraints(fromFarm, 0, 1);
+          grid.getChildren().add(fromFarm);
+          
+          // set comment text field
+          final TextField toFarm = new TextField();
+          toFarm.setPrefColumnCount(15);
+          toFarm.setPromptText("From");
+          GridPane.setConstraints(toFarm, 1, 1);
+          grid.getChildren().add(toFarm);
+          
+          
+          Label onlyShowDateLabel = new Label("Only show dates:");
+          GridPane.setConstraints(onlyShowDateLabel, 0, 2);
+          grid.getChildren().add(onlyShowDateLabel);
+          
+          // set comment text field
+          final TextField fromDate = new TextField();
+          fromDate.setPrefColumnCount(15);
+          fromDate.setPromptText("mm/dd/yyy");
+          GridPane.setConstraints(fromDate, 0, 3);
+          grid.getChildren().add(fromDate);
+          
+          // set comment text field
+          final TextField toDate = new TextField();
+          toDate.setPrefColumnCount(15);
+          toDate.setPromptText("From");
+          GridPane.setConstraints(toDate, 1, 3);
+          grid.getChildren().add(toDate);
+          
+          // Defining the Submit button
+          Button filterButton = new Button("Filter");
+          GridPane.setConstraints(filterButton, 0, 4);
+          grid.getChildren().add(filterButton);          
+          
+          
+          root.setRight(grid);
 
+        } else if (arg.getValue() == options[2]) { // Get Report
+          GridPane grid = new GridPane();
+          
+          // set comment text field
+          final TextField farmIDText = new TextField();
+          farmIDText.setPrefColumnCount(15);
+          farmIDText.setPromptText("Farm ID");
+          GridPane.setConstraints(farmIDText, 0, 0);
+          grid.getChildren().add(farmIDText);
+          
+          // set comment text field
+          final TextField yearText = new TextField();
+          yearText.setPrefColumnCount(15);
+          yearText.setPromptText("Year");
+          GridPane.setConstraints(yearText, 1, 0);
+          grid.getChildren().add(yearText);
+          
+          // Defining the Submit button
+          Button getFarmReportButton = new Button("Get Farm Report");
+          GridPane.setConstraints(getFarmReportButton, 2, 0);
+          grid.getChildren().add(getFarmReportButton);  
+          
+          // set comment text field
+          final TextField yearAnnualText = new TextField();
+          yearAnnualText.setPrefColumnCount(15);
+          yearAnnualText.setPromptText("Year");
+          GridPane.setConstraints(yearAnnualText, 0, 1);
+          grid.getChildren().add(yearAnnualText);
+          
+          // Defining the Submit button
+          Button getAnnualReportButton = new Button("Get Annual Report");
+          GridPane.setConstraints(getAnnualReportButton, 1, 1);
+          grid.getChildren().add(getAnnualReportButton);  
+          
+          // set comment text field
+          final TextField yearMonthlyText = new TextField();
+          yearMonthlyText.setPrefColumnCount(15);
+          yearMonthlyText.setPromptText("Year");
+          GridPane.setConstraints(yearMonthlyText, 0, 2);
+          grid.getChildren().add(yearMonthlyText);
+          
+          // set comment text field
+          final TextField monthMonthlyText = new TextField();
+          monthMonthlyText.setPrefColumnCount(15);
+          monthMonthlyText.setPromptText("Month");
+          GridPane.setConstraints(monthMonthlyText, 1, 2);
+          grid.getChildren().add(monthMonthlyText);
+          
+          // Defining the Submit button
+          Button getMonthlyReportButton = new Button("Get Monthly Report");
+          GridPane.setConstraints(getMonthlyReportButton, 2, 2);
+          grid.getChildren().add(getMonthlyReportButton);  
+          
+          // set comment text field
+          final TextField fromDateText = new TextField();
+          fromDateText.setPrefColumnCount(15);
+          fromDateText.setPromptText("From Date mm/dd/yyy");
+          GridPane.setConstraints(fromDateText, 0, 3);
+          grid.getChildren().add(fromDateText);
+          
+          // set comment text field
+          final TextField toDateText = new TextField();
+          toDateText.setPrefColumnCount(15);
+          toDateText.setPromptText("To Date mm/dd/yyy");
+          GridPane.setConstraints(toDateText, 1, 3);
+          grid.getChildren().add(toDateText);
+          
+          // Defining the Submit button
+          Button getDateReportButton = new Button("Get Date Report");
+          GridPane.setConstraints(getDateReportButton, 2, 3);
+          grid.getChildren().add(getDateReportButton);  
+          
+          
+          root.setRight(grid);
         }
 
 
 
       }
     });
+    
     root.setLeft(new TilePane(comboBox));
-
+    
 
     Label title = new Label("Milk Weight");
     title.setTextAlignment(TextAlignment.CENTER);
@@ -173,10 +317,34 @@ public class Main extends Application {
     farm2.getData().add(new XYChart.Data<>("1", 1));
     farm2.getData().add(new XYChart.Data<>("2", 5));
     farm2.getData().add(new XYChart.Data<>("3", 9));
+    farm2.getData().add(new XYChart.Data<>("4", 1));
+    farm2.getData().add(new XYChart.Data<>("5", 5));
+    farm2.getData().add(new XYChart.Data<>("6", 9));
+    farm2.getData().add(new XYChart.Data<>("7", 1));
+    farm2.getData().add(new XYChart.Data<>("8", 5));
+    farm2.getData().add(new XYChart.Data<>("9", 9));
+    farm2.getData().add(new XYChart.Data<>("10", 1));
+    farm2.getData().add(new XYChart.Data<>("11", 5));
+    farm2.getData().add(new XYChart.Data<>("12", 9));
 
+    
+    //lineChart.setPrefHeight(400);
+    //lineChart.setMinHeight(400);
+    //lineChart.setMaxHeight(400);
 
+    //lineChart.setPrefWidth(400);
+    //lineChart.setMinWidth(400);
+    //lineChart.setMaxWidth(400);
+    
+    //lineChart.setMaxWidth(400);
+    
     root.setCenter(lineChart);
     root.setTop(titleBox);
+    
+    
+    //GridPane tempGrid = new GridPane();
+    //tempGrid.setMinWidth(500);
+    //root.setRight(tempGrid);
 
 
     Scene mainScene = new Scene(root, WINDOW_WIDTH, WINDOW_HEIGHT);
