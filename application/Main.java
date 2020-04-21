@@ -109,8 +109,8 @@ public class Main extends Application {
                 public void handle(ActionEvent arg0) {
                   Label outputLabel = new Label();
                   Label dataLabel = new Label();
-                  GridPane.setConstraints(outputLabel, 0, 3);
-                  GridPane.setConstraints(dataLabel, 0, 4);
+                  GridPane.setConstraints(outputLabel, 0, 10);
+                  GridPane.setConstraints(dataLabel, 0, 11);
                   grid.getChildren().add(outputLabel);
                   grid.getChildren().add(dataLabel);
 
