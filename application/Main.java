@@ -3,7 +3,6 @@ package application;
 import java.util.List;
 import java.util.Observable;
 import javafx.application.Application;
-<<<<<<< HEAD
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
@@ -19,20 +18,14 @@ import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.TilePane;
 import javafx.scene.layout.VBox;
-=======
-import javafx.geometry.Insets;
 import javafx.geometry.Pos;
-import javafx.scene.Scene;
 import javafx.scene.chart.CategoryAxis;
 import javafx.scene.chart.LineChart;
 import javafx.scene.chart.NumberAxis;
 import javafx.scene.chart.XYChart;
-import javafx.scene.control.Label;
-import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.StackPane;
 import javafx.scene.text.Font;
 import javafx.scene.text.TextAlignment;
->>>>>>> 43e5cd19e26f6f2942907b552d0606be0ce31b13
 import javafx.stage.Stage;
 
 public class Main extends Application {
@@ -41,24 +34,16 @@ public class Main extends Application {
   private static final int WINDOW_WIDTH = 1150;
   private static final int WINDOW_HEIGHT = 500;
   private static final String APP_TITLE = "Milk Weight App";
-  
-
-  // Set window properties
-  private static final int WINDOW_WIDTH = 1500;
-  private static final int WINDOW_HEIGHT = 900;
-  private static final String APP_TITLE = "Milk Weight";
 
   @Override
-<<<<<<< HEAD
   public void start(Stage arg0) throws Exception {
     BorderPane root = new BorderPane();
     Label tile = new Label("milk weights");
     root.setTop(tile);
-    
+
     String[] options = {"input data", "get reports"};
-    ComboBox<String> comboBox =
-        new ComboBox<String>(FXCollections.observableArrayList(options));
-    
+    ComboBox<String> comboBox = new ComboBox<String>(FXCollections.observableArrayList(options));
+
     comboBox.valueProperty().addListener(new ChangeListener<String>() {
       @Override
       public void changed(ObservableValue<? extends String> arg, String arg1, String arg2) {
@@ -67,8 +52,8 @@ public class Main extends Application {
           System.out.println("option 1 selected");
           TilePane actionPane = new TilePane();
           Label label = new Label("button not selected");
-//          final TextField in = new TextField("enter input data");
-//          root.setCenter(new TilePane(in));
+          // final TextField in = new TextField("enter input data");
+          // root.setCenter(new TilePane(in));
           Button rightButton = new Button("Press here");
           EventHandler<ActionEvent> event = new EventHandler<ActionEvent>() {
 
@@ -83,18 +68,18 @@ public class Main extends Application {
               in.setPromptText("Enter path to data");
               GridPane.setConstraints(in, 0, 0);
               grid.getChildren().add(in);
-              
+
               // set comment text field
               final TextField comment = new TextField();
               comment.setPrefColumnCount(15);
               comment.setPromptText("Enter farm name");
               GridPane.setConstraints(comment, 0, 2);
               grid.getChildren().add(comment);
-              
-              //Defining the Submit button
+
+              // Defining the Submit button
               Button submit = new Button("Enter");
               GridPane.setConstraints(submit, 1, 0);
-              
+
               // add action to submit button
               submit.setOnAction(new EventHandler<ActionEvent>() {
 
@@ -106,7 +91,7 @@ public class Main extends Application {
                   GridPane.setConstraints(dataLabel, 0, 4);
                   grid.getChildren().add(outputLabel);
                   grid.getChildren().add(dataLabel);
-                  
+
                   if (in.getText() != null && !in.getText().isEmpty()) {
                     dataLabel.setText("data entered: " + in.getText());
                     if (comment.getText() != null && !comment.getText().isEmpty()) {
@@ -114,20 +99,19 @@ public class Main extends Application {
                     } else {
                       outputLabel.setText("data is invalid");
                     }
-                  }
-                  else {
+                  } else {
                     dataLabel.setText("invalid");
                   }
-                  
-                 
-                  
+
+
+
                 }
               });
               grid.getChildren().add(submit);
               root.setCenter(grid);
             }
           };
-          
+
           rightButton.setOnAction(event);
           VBox vb = new VBox();
           vb.setPadding(new Insets(10));
@@ -135,53 +119,31 @@ public class Main extends Application {
           vb.getChildren().add(rightButton);
           actionPane.getChildren().add(rightButton);
           actionPane.getChildren().add(label);
-          
+
           // add to root
           root.setRight(actionPane);
-        }
-        else if (arg.getValue() == options[1]) {
+        } else if (arg.getValue() == options[1]) {
           System.out.println("");
-          
+
         }
-        
-        
+
+
 
       }
     });
     root.setLeft(new TilePane(comboBox));
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    Scene mainScene =  new Scene(root, WINDOW_WIDTH, WINDOW_HEIGHT);
-    
-    arg0.setTitle(APP_TITLE);
-    arg0.setScene(mainScene);
-    arg0.show();
-    
-=======
-  public void start(Stage primaryStage) throws Exception {
-    BorderPane root = new BorderPane();
-    
+
+
     Label title = new Label("Milk Weight");
     title.setTextAlignment(TextAlignment.CENTER);
     title.setFont(Font.font("Comic Sans MS", 35));
-    title.setPadding(new Insets(15,15,15,15));
+    title.setPadding(new Insets(15, 15, 15, 15));
     StackPane titleBox = new StackPane();
     titleBox.getChildren().add(title);
     StackPane.setAlignment(title, Pos.CENTER);
-    
-    
-    //defining the axes
+
+
+    // defining the axes
     final CategoryAxis xAxis = new CategoryAxis(); // we are gonna plot against time
     final NumberAxis yAxis = new NumberAxis();
     xAxis.setLabel("Month");
@@ -189,55 +151,45 @@ public class Main extends Application {
     yAxis.setLabel("Milk Weight");
     yAxis.setAnimated(false); // axis animations are removed
 
-    //creating the line chart with two axis created above
+    // creating the line chart with two axis created above
     final LineChart<String, Number> lineChart = new LineChart<>(xAxis, yAxis);
-    //lineChart.setTitle("Realtime JavaFX Charts");
+    // lineChart.setTitle("Realtime JavaFX Charts");
     lineChart.setAnimated(false); // disable animations
-    
+
     XYChart.Series<String, Number> farm1 = new XYChart.Series<>();
     farm1.setName("Farm 1");
-    
+
     XYChart.Series<String, Number> farm2 = new XYChart.Series<>();
     farm2.setName("Farm 2");
 
     // add series to chart
     lineChart.getData().add(farm1);
     lineChart.getData().add(farm2);
-    
+
     farm1.getData().add(new XYChart.Data<>("1", 2));
     farm1.getData().add(new XYChart.Data<>("2", 10));
     farm1.getData().add(new XYChart.Data<>("3", 1));
-    
+
     farm2.getData().add(new XYChart.Data<>("1", 1));
     farm2.getData().add(new XYChart.Data<>("2", 5));
     farm2.getData().add(new XYChart.Data<>("3", 9));
-    
-    //series.getData().add(new XYChart.Data<>("1", 2));
-    //series.getData().add(new XYChart.Data<>("2", 10));
-    
-    
-    
-    
+
+
     root.setCenter(lineChart);
     root.setTop(titleBox);
-    Scene mainScene = new Scene(root, WINDOW_WIDTH, WINDOW_HEIGHT);
-    
-    primaryStage.setTitle(APP_TITLE);
-    primaryStage.setScene(mainScene);
-    primaryStage.show();
->>>>>>> 43e5cd19e26f6f2942907b552d0606be0ce31b13
 
+
+    Scene mainScene = new Scene(root, WINDOW_WIDTH, WINDOW_HEIGHT);
+
+    arg0.setTitle(APP_TITLE);
+    arg0.setScene(mainScene);
+    arg0.show();
   }
-  
-  
+
+
 
   public static void main(String[] args) {
-<<<<<<< HEAD
-    launch("");
-
-=======
     launch(args);
->>>>>>> 43e5cd19e26f6f2942907b552d0606be0ce31b13
   }
 
 }
