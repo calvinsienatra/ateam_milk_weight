@@ -25,6 +25,8 @@
  *******************************************/
 package application;
 
+import java.io.File;
+import java.io.IOException;
 import java.util.List;
 import javafx.application.Application;
 import javafx.beans.value.ChangeListener;
@@ -50,6 +52,7 @@ import javafx.scene.chart.XYChart;
 import javafx.scene.layout.StackPane;
 import javafx.scene.text.Font;
 import javafx.scene.text.TextAlignment;
+import javafx.stage.DirectoryChooser;
 import javafx.stage.Stage;
 
 // TEST COMMENT
@@ -65,6 +68,8 @@ public class Main extends Application {
   private static final int WINDOW_WIDTH = 1400;
   private static final int WINDOW_HEIGHT = 800;
   private static final String APP_TITLE = "Milk Weight App";
+  
+  private Stage mainStage;
 
   private void generateLoadPanel(BorderPane root) {
     GridPane loadPanelPane = new GridPane();
@@ -127,6 +132,45 @@ public class Main extends Application {
     Button openFile = new Button("Browse File");
     loadPanelPane.getChildren().add(openFile);
     GridPane.setConstraints(openFile, 0, 7);
+    
+    EventHandler<ActionEvent> browseFileEvent = new EventHandler<ActionEvent>() {
+      public void handle(ActionEvent e) {
+        
+        DirectoryChooser chooseCSVDirectory = new DirectoryChooser();
+        File selectedDirectory = chooseCSVDirectory.showDialog(mainStage);
+        
+        if(selectedDirectory != null) {
+          System.out.println(selectedDirectory.getAbsolutePath());
+          String pathToDir = selectedDirectory.getAbsolutePath();
+          
+          File[] listOfCSV = selectedDirectory.listFiles();
+          
+          
+          
+          for(File file: listOfCSV) {
+            System.out.println(file.getName());
+            
+            InputParser parser = new InputParser();
+            try {
+              parser.inputData(file.getAbsolutePath());
+            } catch (IOException e1) {
+              // Error opening file
+              System.out.println("Error: File cannot be opened!");
+            }
+            
+            parser.printData();
+            
+          }
+          
+          
+          
+          
+        }
+        
+      }
+    };
+
+    openFile.setOnAction(browseFileEvent); // Set the event handler for browse button
 
     root.setRight(loadPanelPane);
   }
@@ -404,6 +448,9 @@ public class Main extends Application {
 
   @Override
   public void start(Stage arg0) throws Exception {
+    
+    mainStage = arg0;
+    
     BorderPane root = new BorderPane(); // Create root pane
 
     // Create combobox options
