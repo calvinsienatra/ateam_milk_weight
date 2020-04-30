@@ -255,6 +255,28 @@ public class FarmGroup {
     return calculatedPercentage;
   }
   
+  public int getTotalMilkWeightForAllFarmAndMonth(Integer year, Integer month) throws NoSuchElementException{
+    Set <String> farmIds = farms.keySet();
+    Set <String> filteredFarmIds = new HashSet<>();
+    
+    for(String farmId: farmIds) {
+      try {
+        farms.get(farmId).getMilkWeight(year, 1);
+        filteredFarmIds.add(farmId);
+      }catch(MissingFormatArgumentException e) {
+        // Continue
+      }
+    }
+
+    int totalMilkWeightYearMonth = 0;
+    
+    for(String farmId: filteredFarmIds) {
+      totalMilkWeightYearMonth += farms.get(farmId).getMilkWeight(year, month);
+    }
+    
+    return totalMilkWeightYearMonth;
+    
+  }
   
   /**
    * Gets the report of a month and year for every farm
@@ -265,21 +287,32 @@ public class FarmGroup {
    */
   public HashMap<String, Double> getMonthlyReport(Integer year, Integer month){
     Set<String> farmIds = farms.keySet();
+    Set <String> filteredFarmIds = new HashSet<>();
+    
+    for(String farmId: farmIds) {
+      try {
+        farms.get(farmId).getMilkWeight(year, 1);
+        filteredFarmIds.add(farmId);
+      }catch(MissingFormatArgumentException e) {
+        // Continue
+      }
+    }
     
     int totalMilkWeightYearMonth = 0;
     
-    for(String farmId: farmIds) {
+    for(String farmId: filteredFarmIds) {
       totalMilkWeightYearMonth += farms.get(farmId).getMilkWeight(year, month);
     }
     
     HashMap<String, Double> calculatedPercentage = new HashMap<>();
     
-    for(String farmId: farmIds) {
+    for(String farmId: filteredFarmIds) {
       int curMilkWeight = farms.get(farmId).getMilkWeight(year, month);
       
-      Double curPercentage = ((double)curMilkWeight) / totalMilkWeightYearMonth;
+      Double curPercentage = (((double)curMilkWeight) / totalMilkWeightYearMonth) * 100;
       
-      calculatedPercentage.put(farmId, curPercentage);
+      calculatedPercentage.put(farmId, (double)Math.round(curPercentage * 100.0) / 100.0);
+      
     }
     
     return calculatedPercentage;
