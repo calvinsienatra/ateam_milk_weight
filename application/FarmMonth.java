@@ -44,9 +44,7 @@ public class FarmMonth implements MilkWeight<Integer, Integer> {
   }
 
   /**
-   * 
    * Get milk weights from the given fromDay to the end of the month
-   * 
    */
   @Override
   public List<Integer> getMilkWeightList(Integer key) {

@@ -1,6 +1,7 @@
 package application;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.Hashtable;
 import java.util.List;
 
@@ -72,22 +73,24 @@ public class Farm implements MilkWeight<Integer, Integer> {
     return milk;
   }
 
-  /**
-   * Get total milk weight from range fromYear and from Month to toYear and toMonth
-   */
-  public int getMilkWeight(Integer fromYear, Integer fromMonth, Integer toYear, Integer toMonth) {
-
-    return 0;
-  }
-
-  /**
-   * Get total milk weight from range fromYear, fromMonth, and fromDay to toYear, toMonth, and toDay
-   */
-  public int getMilkWeight(Integer fromYear, Integer fromMonth, Integer fromDay, Integer toYear,
-      Integer toMonth, Integer toDay) {
-
-    return 0;
-  }
+  // /**
+  // * Get total milk weight from range fromYear and from Month to toYear and toMonth
+  // */
+  // public int getMilkWeight(Integer fromYear, Integer fromMonth, Integer toYear, Integer toMonth)
+  // {
+  //
+  // return 0;
+  // }
+  //
+  // /**
+  // * Get total milk weight from range fromYear, fromMonth, and fromDay to toYear, toMonth, and
+  // toDay
+  // */
+  // public int getMilkWeight(Integer fromYear, Integer fromMonth, Integer fromDay, Integer toYear,
+  // Integer toMonth, Integer toDay) {
+  //
+  // return 0;
+  // }
 
 
   /**
@@ -95,23 +98,30 @@ public class Farm implements MilkWeight<Integer, Integer> {
    */
   @Override
   public List<Integer> getMilkWeightList(Integer key) {
-    return null;
-  }
 
-  /**
-   * Get milk weights for each day of the given month
-   */
-  public List<Integer> getMilkWeightList(Integer year, Integer month) {
-    return null;
-  }
+    List<Integer> list = new ArrayList<Integer>();
+    FarmYear yearTemp = data.get(key);
+    for (int i = 1; i < 13; i++) {
+      list.addAll(yearTemp.getMilkWeightList(i));
+    }
 
-  /**
-   * Get milk weights for each day starting from the given fromDate to the toDate
-   */
-  public List<Integer> getMilkWeightList(Integer fromYear, Integer fromMonth, Integer fromDay,
-      Integer toYear, Integer toMonth, Integer toDay) {
-    return null;
+    return list;
   }
+  //
+  // /**
+  // * Get milk weights for each day of the given month
+  // */
+  // public List<Integer> getMilkWeightList(Integer year, Integer month) {
+  // return null;
+  // }
+  //
+  // /**
+  // * Get milk weights for each day starting from the given fromDate to the toDate
+  // */
+  // public List<Integer> getMilkWeightList(Integer fromYear, Integer fromMonth, Integer fromDay,
+  // Integer toYear, Integer toMonth, Integer toDay) {
+  // return null;
+  // }
 
 
 

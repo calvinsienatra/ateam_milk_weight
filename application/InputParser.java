@@ -93,19 +93,19 @@ public class InputParser {
    * @throws IOException
    */
   public static void main(String[] args) throws IOException {
-    InputParser parser = new InputParser();
-    
-    // edit file path to run on your machine
-    parser.inputData(
-        "C:\\Users\\ajshe\\OneDrive\\Documents\\cs400\\ateam_milk_weight\\milk\\small\\2019-1.csv");
-    System.out.println(parser.data.keySet());
-    System.out.println(parser.data.getV("Farm 2"));
-    parser.printData();
-    
-    FarmYear farmYear = new FarmYear(parser.data);
-    farmYear.inputData();
-    System.out.println(farmYear.getData());
-    farmYear.printData();
+//    InputParser parser = new InputParser();
+//    
+//    // edit file path to run on your machine
+//    parser.inputData(
+//        "C:\\Users\\ajshe\\OneDrive\\Documents\\cs400\\ateam_milk_weight\\milk\\small\\2019-1.csv");
+//    System.out.println(parser.data.keySet());
+//    System.out.println(parser.data.getV("Farm 2"));
+//    parser.printData();
+//    
+//    FarmYear farmYear = new FarmYear(parser.data);
+//    farmYear.inputData();
+//    System.out.println(farmYear.getData());
+//    farmYear.printData();
   }
 
 }
