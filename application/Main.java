@@ -70,8 +70,9 @@ public class Main extends Application {
   private static final String APP_TITLE = "Milk Weight App";
   
   private Stage mainStage;
+  private BorderPane root;
 
-  private void generateLoadPanel(BorderPane root) {
+  private void generateLoadPanel() {
     GridPane loadPanelPane = new GridPane();
 
     // INPUT MANUAL FORM
@@ -175,7 +176,7 @@ public class Main extends Application {
     root.setRight(loadPanelPane);
   }
 
-  private void generateLoadSavePanel(BorderPane root) {
+  private void generateLoadSavePanel() {
     TilePane loadSavePanelPane = new TilePane(); // Create the load panel pane
 
     Button loadButton = new Button("Load Data"); // Create a load data button
@@ -184,7 +185,7 @@ public class Main extends Application {
     // Construct an EventHandler for load data
     EventHandler<ActionEvent> loadEvent = new EventHandler<ActionEvent>() {
       public void handle(ActionEvent e) {
-        generateLoadPanel(root); // Generate the load panel
+        generateLoadPanel(); // Generate the load panel
       }
     };
 
@@ -207,7 +208,7 @@ public class Main extends Application {
     root.setRight(loadSavePanelPane); // Set the right root pane
   }
 
-  public void generateFilterDataPanel(BorderPane root) {
+  public void generateFilterDataPanel() {
     GridPane filterDataPanelPane = new GridPane();
 
     // Create an only show farms label
@@ -267,7 +268,7 @@ public class Main extends Application {
     root.setRight(filterDataPanelPane);
   }
 
-  private void generateGetReportPanel(BorderPane root) {
+  private void generateGetReportPanel() {
     GridPane getReportPanelPane = new GridPane();
 
     // Create a farm id text field
@@ -388,7 +389,7 @@ public class Main extends Application {
     root.setRight(getReportPanelPane);
   }
 
-  private void generateTitle(BorderPane root) {
+  private void generateTitle() {
     // Create the title label
     Label title = new Label("Milk Weight");
     title.setTextAlignment(TextAlignment.CENTER); // Set center
@@ -401,7 +402,7 @@ public class Main extends Application {
     root.setTop(titleBox);
   }
 
-  private void generateGraph(BorderPane root) {
+  private void generateGraph() {
     // defining the axes
     final CategoryAxis xAxis = new CategoryAxis(); // plot against time
     final NumberAxis yAxis = new NumberAxis();
@@ -451,7 +452,7 @@ public class Main extends Application {
     
     mainStage = arg0;
     
-    BorderPane root = new BorderPane(); // Create root pane
+    this.root = new BorderPane();
 
     // Create combobox options
     String[] options = {"Load/Save Data", "Filter Data", "Get Report"};
@@ -464,23 +465,23 @@ public class Main extends Application {
       public void changed(ObservableValue<? extends String> arg, String arg1, String arg2) {
         if (arg.getValue() == options[0]) { // If input/output data is chosen
           // Generate the load save panel
-          generateLoadSavePanel(root);
+          generateLoadSavePanel();
 
         } else if (arg.getValue() == options[1]) { // If filter Data
           // Generate the filter data panel
-          generateFilterDataPanel(root);
+          generateFilterDataPanel();
 
         } else if (arg.getValue() == options[2]) { // If get report
-          generateGetReportPanel(root);
+          generateGetReportPanel();
 
         }
       }
     });
 
 
-    generateTitle(root); // Generate the title
+    generateTitle(); // Generate the title
 
-    generateGraph(root); // Generate graph
+    generateGraph(); // Generate graph
 
 
     // Create the main scene
