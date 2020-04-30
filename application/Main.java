@@ -29,8 +29,11 @@ import java.io.File;
 import java.io.IOException;
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
 import java.util.MissingFormatArgumentException;
+import java.util.NoSuchElementException;
 import java.util.Set;
 import javafx.application.Application;
 import javafx.beans.value.ChangeListener;
@@ -153,6 +156,8 @@ public class Main extends Application {
         try {
           if(selectedDirectory != null) {
             //System.out.println(selectedDirectory.getAbsolutePath());
+            cheeseFactory = new FarmGroup();
+            
             String pathToDir = selectedDirectory.getAbsolutePath();
             
             File[] listOfCSV = selectedDirectory.listFiles();
@@ -362,9 +367,10 @@ public class Main extends Application {
             //System.out.println();
           } catch (NoSuchFieldException e1) {
             generateStatusMessage("Error. Given farm is invalid!");
-            e1.printStackTrace();
           } catch (MissingFormatArgumentException e2) {
             generateStatusMessage("Error. Stated farm is incomplete!");
+          } catch(NoSuchElementException e3) {
+            generateStatusMessage("Error. Given year is invalid!");
           }
           
           
@@ -391,7 +397,25 @@ public class Main extends Application {
     EventHandler<ActionEvent> getAnnualReportEvent = new EventHandler<ActionEvent>() {
       public void handle(ActionEvent e) {
         // EVENT IF GET ANNUAL REPORT IS CLICKED
-
+        System.out.println("called!");
+        if(yearAnnualText.getText() != null && !yearAnnualText.getText().isEmpty()) {
+          Integer year = Integer.parseInt(yearAnnualText.getText());
+          boolean fuse = true;
+          HashMap<String, Double> annualReport = null;
+          try {
+            annualReport = cheeseFactory.getAnnualReport(year);
+            totalMilkWeightText = cheeseFactory.getTotalMilkWeightForAllFarmAndYear(year);
+          }catch(NoSuchElementException e1) {
+            fuse = false;
+            generateStatusMessage("Error. Year is invalid!");
+          }
+          
+          if(fuse) {
+            generateAnnualReportGraph(annualReport);
+            generateStatusMessage("Annual report successfully generated!");
+            generateOptionPane();
+          }
+        }
 
       }
     };
@@ -476,20 +500,57 @@ public class Main extends Application {
     root.setTop(titleBox);
   }
   
+  private void generateAnnualReportGraph(HashMap<String, Double> annualReport) {
+    
+    // defining the axes
+    final CategoryAxis xAxis = new CategoryAxis(); // plot against time
+    final NumberAxis yAxis = new NumberAxis();
+    xAxis.setLabel("Farms");
+    xAxis.setAnimated(true); // axis animations are removed
+    yAxis.setLabel("Milk Weight Percentage");
+    yAxis.setAnimated(true); // axis animations are removed
+    
+    final LineChart<String, Number> lineChart = new LineChart<>(xAxis, yAxis);
+    
+    lineChart.setAnimated(true);
+    
+    XYChart.Series<String, Number> farm = new XYChart.Series<>();
+    farm.setName("Farms");
+    
+    lineChart.getData().add(farm);
+    
+    Set<String> farmIds = annualReport.keySet();
+    ArrayList<String> farmIdsSorted = new ArrayList<>();
+    
+    for(String farmId: farmIds) {
+      farmIdsSorted.add(farmId);
+    }
+    
+    Collections.sort(farmIdsSorted);
+    
+    
+    for(int i = 0; i < farmIdsSorted.size(); i++) {
+      farm.getData().add(new XYChart.Data<>(farmIdsSorted.get(i), annualReport.get(farmIdsSorted.get(i))));
+    }
+
+    root.setCenter(lineChart);
+    
+  }
+  
   private void generateFarmReportGraph(String farmId, ArrayList<Double> percentages) {
     
     // defining the axes
     final CategoryAxis xAxis = new CategoryAxis(); // plot against time
     final NumberAxis yAxis = new NumberAxis();
     xAxis.setLabel("Month");
-    xAxis.setAnimated(false); // axis animations are removed
+    xAxis.setAnimated(true); // axis animations are removed
     yAxis.setLabel("Milk Weight");
-    yAxis.setAnimated(false); // axis animations are removed
+    yAxis.setAnimated(true); // axis animations are removed
 
     // creating the line chart with two axis created above
     final LineChart<String, Number> lineChart = new LineChart<>(xAxis, yAxis);
 
-    lineChart.setAnimated(false); // disable animations
+    lineChart.setAnimated(true); // disable animations
 
     XYChart.Series<String, Number> farm = new XYChart.Series<>();
     farm.setName(farmId);
@@ -497,10 +558,6 @@ public class Main extends Application {
     // add series to chart
     lineChart.getData().add(farm);
 
-    /*farm.getData().add(new XYChart.Data<>("1", 2));
-    farm.getData().add(new XYChart.Data<>("2", 10));
-    farm.getData().add(new XYChart.Data<>("3", 1));*/
-    
     for(int i = 0; i < 12; i++) {
       farm.getData().add(new XYChart.Data<>(Integer.toString(i+1), percentages.get(i)));
     }

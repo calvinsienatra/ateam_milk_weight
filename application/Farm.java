@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.List;
+import java.util.NoSuchElementException;
 
 public class Farm implements MilkWeight<Integer, Integer> {
 
@@ -51,8 +52,11 @@ public class Farm implements MilkWeight<Integer, Integer> {
    * Get total milk weights from given year
    */
   @Override
-  public int getMilkWeight(Integer key) {
+  public int getMilkWeight(Integer key) throws NoSuchElementException{
     FarmYear year = data.get(key);
+    if(year == null) {
+      throw new NoSuchElementException("Year does not exist!");
+    }
     int milk = year.getTotalMilkWeight();
     return milk;
   }
@@ -62,6 +66,9 @@ public class Farm implements MilkWeight<Integer, Integer> {
    */
   public int getMilkWeight(Integer year, Integer month) {
     FarmYear yearTemp = data.get(year);
+    if(yearTemp == null) {
+      throw new NoSuchElementException();
+    }
     int milk = yearTemp.getMilkWeight(month);
     return milk;
   }
