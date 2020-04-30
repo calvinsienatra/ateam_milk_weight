@@ -1,12 +1,14 @@
 package application;
-
-import java.io.IOException;
 import java.time.LocalDate;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
-
+/**
+ * Farm year class
+ * 
+ * @author ajshe
+ *
+ */
 public class FarmYear implements MilkWeight<Integer, Integer> {
 
 
@@ -60,6 +62,4 @@ public class FarmYear implements MilkWeight<Integer, Integer> {
     return list;
   }
 
-
-
-}
+} // end FarmYear class
