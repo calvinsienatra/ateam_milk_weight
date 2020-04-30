@@ -4,6 +4,7 @@ import java.time.DateTimeException;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.MissingFormatArgumentException;
 import java.util.Set;
 
 /**
@@ -15,6 +16,10 @@ import java.util.Set;
 public class FarmGroup {
    
   HashMap<String, Farm> farms;
+  
+  public FarmGroup() {
+    farms = new HashMap<>();
+  }
   
   /**
    * Gets the total milk weight of the given year
@@ -41,14 +46,16 @@ public class FarmGroup {
    * @param month month of the year to get the milk weight
    * @return the total milk weight of the year and month
    */
-  public int getTotalMilkWeight(int year, int month) {
+  public int getTotalMilkWeight(int year, int month) throws MissingFormatArgumentException{
     Set<String> farmIds = farms.keySet();
     
     int totalMilkWeight = 0;
     
     for(String farmId: farmIds) {
-      for(int i = 0; i < 12; i++) {
-        totalMilkWeight += farms.get(farmId).getMilkWeight(year, i);
+      try {
+        totalMilkWeight += farms.get(farmId).getMilkWeight(year, month);
+      }catch(MissingFormatArgumentException e) {
+        // Skip
       }
     }
     
@@ -95,13 +102,34 @@ public class FarmGroup {
    * @param milkWeight the milk weight
    */
   public void insertMilkWeight(String farmId, LocalDate dateToSet, int milkWeight) {
-    if(farms.get(farmId) == null) {
+    
+    
+    if(!farms.containsKey(farmId)) {
       farms.put(farmId, new Farm(farmId));
     }
     
     Farm farm = farms.get(farmId);
+    System.out.println(farm);
     
     farm.insertMilkWeight(dateToSet, milkWeight);
+    
+  }
+  
+  
+  public int getTotalMilkWeightForFarmAndYear(String farmId, Integer year) throws NoSuchFieldException{
+    Farm farm = farms.get(farmId);
+    
+    if(farm == null) {
+      throw new NoSuchFieldException("Error: Invalid farm id!");
+    }
+    
+    Integer totalMilkWeight = 0;
+    
+    for(int i = 0; i < 12; i++) {
+      totalMilkWeight += farm.getMilkWeight(year, i+1);
+    }
+    
+    return totalMilkWeight;
     
   }
   
@@ -114,8 +142,13 @@ public class FarmGroup {
    * @throws NoSuchFieldException if the given farm or year is not available
    * @return a ArrayList with the percentage for every month of the year
    */
-  public ArrayList<Double> getFarmReport(String farmId, Integer year) throws NoSuchFieldException{
+  public ArrayList<Double> getFarmReport(String farmId, Integer year) throws NoSuchFieldException, MissingFormatArgumentException{
     Farm farm = farms.get(farmId);
+    
+    System.out.println(farmId);
+    System.out.println(farms.keySet());
+    System.out.println(farm);
+    System.out.println();
     
     if(farm == null) {
       throw new NoSuchFieldException("Error: Invalid farm id!");
@@ -123,9 +156,11 @@ public class FarmGroup {
     
     ArrayList<Integer> farmYear = new ArrayList<>();
     
+
     for(int i = 0; i < 12; i++) {
-      farmYear.add(farm.getMilkWeight(year, i));
+      farmYear.add(farm.getMilkWeight(year, i+1));
     }
+
     
     ArrayList<Integer> totalMilkWeightPerMonth = new ArrayList<>();
     
@@ -139,9 +174,9 @@ public class FarmGroup {
       int totalMilkWeightThisMonth = totalMilkWeightPerMonth.get(i);
       int curMilkWeight = farmYear.get(i);
       
-      Double curPercentage = ((double)curMilkWeight) / totalMilkWeightThisMonth;
+      Double curPercentage = (((double)curMilkWeight) / totalMilkWeightThisMonth) * 100;
       
-      calculatedPercentage.add(curPercentage);
+      calculatedPercentage.add(Math.round(curPercentage * 100.0) / 100.0);
       
     }
     

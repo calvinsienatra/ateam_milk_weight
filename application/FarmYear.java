@@ -5,7 +5,9 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.IllegalFormatException;
 import java.util.List;
+import java.util.MissingFormatArgumentException;
 
 public class FarmYear implements MilkWeight<Integer, Integer> {
 
@@ -14,19 +16,30 @@ public class FarmYear implements MilkWeight<Integer, Integer> {
   private int totalMilkWeight;
 
   public FarmYear() {
+    data = new HashMap<>();
+    totalMilkWeight = 0;
   }
 
 
   @Override
   public void insertMilkWeight(LocalDate dateToSet, Integer milkWeight) {
+    if(!data.containsKey(dateToSet.getMonthValue())) {
+      data.put(dateToSet.getMonthValue(), new FarmMonth());
+    }
+    
     FarmMonth temp = data.get(dateToSet.getMonthValue());
+    System.out.println(dateToSet + ": " + temp);
     temp.insertMilkWeight(dateToSet, milkWeight);
     totalMilkWeight += milkWeight;
-
   }
 
   @Override
-  public int getMilkWeight(Integer key) {
+  public int getMilkWeight(Integer key) throws MissingFormatArgumentException{
+    System.out.println(key);
+    System.out.println(data.keySet());
+    if(data.keySet().size() < 12) {
+      throw new MissingFormatArgumentException("Month incomplete. Program should ignore this farm.");
+    }
     FarmMonth temp = data.get(key);
     return temp.getTotalMilkWeight();
   }

@@ -47,12 +47,19 @@ public class InputParser {
       while ((line = br.readLine()) != null) {
 
         String[] row = line.split(splitBy);
-        System.out.println(Arrays.deepToString(row));
-        String farmID = row[1];
-        String date = row[0];
-        int weight = Integer.parseInt(row[2]);
-
-        data.putV(farmID, date, weight);
+        // System.out.println(Arrays.deepToString(row));
+        try {
+          String farmID = row[1];
+          if(farmID.equals("-")) {
+            continue;
+          }
+          String date = row[0];
+          int weight = Integer.parseInt(row[2]);
+  
+          data.putV(farmID, date, weight);
+        }catch(Exception e) {
+          System.out.println("Exception occured: " + e);
+        }
 
 
       }

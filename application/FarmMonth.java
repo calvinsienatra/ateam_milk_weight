@@ -2,17 +2,23 @@ package application;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.List;
 
 public class FarmMonth implements MilkWeight<Integer, Integer> {
 
   // Hashtable: Key(Day in month), Value(milkWeight of day)
-  private Hashtable<Integer, Integer> data;
+  private HashMap<Integer, Integer> data;
 
   // Total milk weight from the month
   private int totalMilkWeight;
-
+  
+  public FarmMonth() {
+    data = new HashMap<>();
+    totalMilkWeight = 0;
+  }
+  
   /**
    * 
    * Insert Milk Weight on certain day in month
@@ -20,10 +26,8 @@ public class FarmMonth implements MilkWeight<Integer, Integer> {
    */
   @Override
   public void insertMilkWeight(LocalDate dateToSet, Integer milkWeight) {
-
     data.put(dateToSet.getDayOfMonth(), milkWeight);
     totalMilkWeight += milkWeight;
-
   }
 
   /**

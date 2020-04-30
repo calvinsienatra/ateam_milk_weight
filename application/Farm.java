@@ -2,12 +2,13 @@ package application;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.List;
 
 public class Farm implements MilkWeight<Integer, Integer> {
 
-  private Hashtable<Integer, FarmYear> data;
+  private HashMap<Integer, FarmYear> data;
 
   private final String farmID;
 
@@ -19,6 +20,8 @@ public class Farm implements MilkWeight<Integer, Integer> {
    */
   public Farm(String farmID) {
     this.farmID = farmID;
+    data = new HashMap<>();
+    totalMilkWeight = 0;
   }
 
   /**
@@ -28,11 +31,13 @@ public class Farm implements MilkWeight<Integer, Integer> {
    */
   @Override
   public void insertMilkWeight(LocalDate dateToSet, Integer milkWeight) {
-
+    if(!data.containsKey(dateToSet.getYear())) {
+      data.put(dateToSet.getYear(), new FarmYear());
+    }
+    
     FarmYear year = data.get(dateToSet.getYear());
     year.insertMilkWeight(dateToSet, milkWeight);
     totalMilkWeight += milkWeight;
-
   }
 
   /**
@@ -47,7 +52,6 @@ public class Farm implements MilkWeight<Integer, Integer> {
    */
   @Override
   public int getMilkWeight(Integer key) {
-
     FarmYear year = data.get(key);
     int milk = year.getTotalMilkWeight();
     return milk;
@@ -57,7 +61,6 @@ public class Farm implements MilkWeight<Integer, Integer> {
    * Get total milk weights from specific month and year
    */
   public int getMilkWeight(Integer year, Integer month) {
-
     FarmYear yearTemp = data.get(year);
     int milk = yearTemp.getMilkWeight(month);
     return milk;

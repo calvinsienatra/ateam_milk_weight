@@ -27,7 +27,11 @@ package application;
 
 import java.io.File;
 import java.io.IOException;
+import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.MissingFormatArgumentException;
+import java.util.Set;
 import javafx.application.Application;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
@@ -35,6 +39,7 @@ import javafx.collections.FXCollections;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
+import javafx.geometry.Orientation;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
@@ -71,6 +76,10 @@ public class Main extends Application {
   
   private Stage mainStage;
   private BorderPane root;
+  
+  private FarmGroup cheeseFactory;
+  
+  private int totalMilkWeightText = 0;
 
   private void generateLoadPanel() {
     GridPane loadPanelPane = new GridPane();
@@ -139,33 +148,71 @@ public class Main extends Application {
         
         DirectoryChooser chooseCSVDirectory = new DirectoryChooser();
         File selectedDirectory = chooseCSVDirectory.showDialog(mainStage);
+        boolean fuse = true;
         
-        if(selectedDirectory != null) {
-          System.out.println(selectedDirectory.getAbsolutePath());
-          String pathToDir = selectedDirectory.getAbsolutePath();
-          
-          File[] listOfCSV = selectedDirectory.listFiles();
-          
-          
-          
-          for(File file: listOfCSV) {
-            System.out.println(file.getName());
+        try {
+          if(selectedDirectory != null) {
+            //System.out.println(selectedDirectory.getAbsolutePath());
+            String pathToDir = selectedDirectory.getAbsolutePath();
+            
+            File[] listOfCSV = selectedDirectory.listFiles();
+            //System.out.println(listOfCSV);
             
             InputParser parser = new InputParser();
-            try {
-              parser.inputData(file.getAbsolutePath());
-            } catch (IOException e1) {
-              // Error opening file
-              System.out.println("Error: File cannot be opened!");
+            
+            for(File file: listOfCSV) {
+              System.out.println(file.getName());
+              
+              parser = new InputParser();
+              try {
+                parser.inputData(file.getAbsolutePath());
+              } catch (IOException e1) {
+                // Error opening file
+                fuse = false;
+                System.out.println("Error: File cannot be opened!");
+                generateStatusMessage("Error. File cannot be opened!");
+                break;
+              } catch (Exception e2) {
+                System.out.println(e2);
+              }
+              
+              // parser.printData();
+              DataMap<String, String, Integer> inputData = parser.getData();
+              
+              Set<String> farmIds = inputData.keySet();
+              for(String farmId: farmIds) {
+                for(String date: inputData.getV(farmId).keySet()) {
+                  try {
+                  String[] splittedDate = date.split("-");
+                  Integer year = Integer.parseInt(splittedDate[0]);
+                  Integer month = Integer.parseInt(splittedDate[1]);
+                  Integer day = Integer.parseInt(splittedDate[2]);
+                  
+                  LocalDate convDate = LocalDate.of(year, month, day);
+                  
+                  cheeseFactory.insertMilkWeight(farmId, convDate, inputData.getDeepV(farmId, date));
+                  }catch(Exception e3) {
+                    System.out.println(e3);
+                  }
+                  
+                }
+                
+              }
+              
             }
             
-            parser.printData();
             
+          }else {
+            fuse = false;
+            generateStatusMessage("Error. Directory is empty!");
           }
-          
-          
-          
-          
+        }catch(Exception E) {
+          fuse = false;
+          generateStatusMessage("Error. Loading file failed!");
+        }
+        
+        if(fuse) {
+          generateStatusMessage("File successfully loaded!");
         }
         
       }
@@ -294,7 +341,34 @@ public class Main extends Application {
     EventHandler<ActionEvent> getFarmReportEvent = new EventHandler<ActionEvent>() {
       public void handle(ActionEvent e) {
         // EVENT IF GET FARM REPORT IS CLICKED
-
+        if(farmIDText.getText() != null && !farmIDText.getText().isEmpty()
+            && yearText.getText() != null && !yearText.getText().isEmpty()) {
+          
+          String farmId = farmIDText.getText();
+          Integer year = Integer.parseInt(yearText.getText());
+          
+          try {
+            for(Double per: cheeseFactory.getFarmReport(farmId, year)) {
+              System.out.println(per);
+            }
+            generateFarmReportGraph(farmId, cheeseFactory.getFarmReport(farmId, year));
+            
+            totalMilkWeightText = cheeseFactory.getTotalMilkWeightForFarmAndYear(farmId, year);
+            
+            generateOptionPane();
+            
+            generateStatusMessage("Farm report successfully generated!");
+            
+            //System.out.println();
+          } catch (NoSuchFieldException e1) {
+            generateStatusMessage("Error. Given farm is invalid!");
+            e1.printStackTrace();
+          } catch (MissingFormatArgumentException e2) {
+            generateStatusMessage("Error. Stated farm is incomplete!");
+          }
+          
+          
+        }
 
       }
     };
@@ -401,6 +475,39 @@ public class Main extends Application {
 
     root.setTop(titleBox);
   }
+  
+  private void generateFarmReportGraph(String farmId, ArrayList<Double> percentages) {
+    
+    // defining the axes
+    final CategoryAxis xAxis = new CategoryAxis(); // plot against time
+    final NumberAxis yAxis = new NumberAxis();
+    xAxis.setLabel("Month");
+    xAxis.setAnimated(false); // axis animations are removed
+    yAxis.setLabel("Milk Weight");
+    yAxis.setAnimated(false); // axis animations are removed
+
+    // creating the line chart with two axis created above
+    final LineChart<String, Number> lineChart = new LineChart<>(xAxis, yAxis);
+
+    lineChart.setAnimated(false); // disable animations
+
+    XYChart.Series<String, Number> farm = new XYChart.Series<>();
+    farm.setName(farmId);
+
+    // add series to chart
+    lineChart.getData().add(farm);
+
+    /*farm.getData().add(new XYChart.Data<>("1", 2));
+    farm.getData().add(new XYChart.Data<>("2", 10));
+    farm.getData().add(new XYChart.Data<>("3", 1));*/
+    
+    for(int i = 0; i < 12; i++) {
+      farm.getData().add(new XYChart.Data<>(Integer.toString(i+1), percentages.get(i)));
+    }
+
+   
+    root.setCenter(lineChart);
+  }
 
   private void generateGraph() {
     // defining the axes
@@ -446,19 +553,24 @@ public class Main extends Application {
 
     root.setCenter(lineChart);
   }
-
-  @Override
-  public void start(Stage arg0) throws Exception {
+  
+  private void generateStatusMessage(String msg) {
+    GridPane statusMsgBox = new GridPane();
     
-    mainStage = arg0;
+    Label statusText = new Label("Status: " + msg);
     
-    this.root = new BorderPane();
-
-    // Create combobox options
+    statusMsgBox.getChildren().add(statusText);
+    
+    root.setBottom(statusMsgBox);
+    
+  }
+  
+  private void generateOptionPane() {
+    TilePane leftPane = new TilePane(Orientation.VERTICAL);
+    
     String[] options = {"Load/Save Data", "Filter Data", "Get Report"};
     ComboBox<String> comboBox = new ComboBox<String>(FXCollections.observableArrayList(options));
-    root.setLeft(new TilePane(comboBox)); // Place the combobox button to the left borderpane
-
+    
     // Create a listener for the combobox
     comboBox.valueProperty().addListener(new ChangeListener<String>() {
       @Override
@@ -477,12 +589,34 @@ public class Main extends Application {
         }
       }
     });
+    
+    leftPane.getChildren().add(comboBox);
+    totalMilkWeightText = this.totalMilkWeightText;
+    
+    Label totalMilkLabel = new Label("Total milk weight: " + totalMilkWeightText + " lbs");
+    leftPane.getChildren().add(totalMilkLabel);
+    
+    root.setLeft(leftPane); // Place the combobox button to the left borderpane
+    
+    
+  }
 
+  @Override
+  public void start(Stage arg0) throws Exception {
+    
+    mainStage = arg0;
+    
+    this.root = new BorderPane();
+    
+    this.cheeseFactory = new FarmGroup();
+
+    generateOptionPane();
+    
+    generateStatusMessage("Please load the milk weight data!");
 
     generateTitle(); // Generate the title
 
     generateGraph(); // Generate graph
-
 
     // Create the main scene
     Scene mainScene = new Scene(root, WINDOW_WIDTH, WINDOW_HEIGHT);
