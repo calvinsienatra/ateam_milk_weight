@@ -9,7 +9,7 @@ public class Farm implements MilkWeight<Integer, Integer> {
 
   private Hashtable<Integer, FarmYear> data;
 
-  private final int farmID;
+  private final String farmID;
 
   private int totalMilkWeight;
 
@@ -17,7 +17,7 @@ public class Farm implements MilkWeight<Integer, Integer> {
    * @param farmID
    *
    */
-  public Farm(int farmID) {
+  public Farm(String farmID) {
     this.farmID = farmID;
   }
 
