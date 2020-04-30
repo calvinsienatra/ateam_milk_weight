@@ -2,10 +2,12 @@
  * 
  */
 package application;
-
 import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -53,8 +55,6 @@ public class InputParser {
         int weight = Integer.parseInt(row[2]);
 
         data.putV(farmID, date, weight);
-
-
       }
     } catch (FileNotFoundException e) {
       e.printStackTrace();
@@ -62,11 +62,37 @@ public class InputParser {
       e.printStackTrace();
     }
   }
+  
+  public void saveFile(String path) {
+    try {
+      File myFile = new File(path);
+      if (myFile.createNewFile()) {
+        System.out.println("Created file " + myFile.getName());
+      }
+      else {
+        System.out.println("File exists");
+      }
+      
+      FileWriter writer = new FileWriter(path);
+      BufferedWriter bwr = new BufferedWriter(writer);
+      
+      bwr.write(printData().toString());
+      
+      bwr.flush();
+      
+      bwr.close();
+      
+    }
+    catch (Exception e) {
+      e.printStackTrace();
+    }
+  }
 
   /**
    * print data from data hashMap
+   * @return 
    */
-  public void printData() {
+  public StringBuffer printData() {
     StringBuffer dataString = new StringBuffer();
     for (String farm : data.keySet()) {
       HashMap<String, Integer> value = data.getV(farm);
@@ -81,6 +107,7 @@ public class InputParser {
         dataString.append(value.get(date));
       }
     }
+    return dataString;
 
   }
   
@@ -101,11 +128,8 @@ public class InputParser {
     System.out.println(parser.data.keySet());
     System.out.println(parser.data.getV("Farm 2"));
     parser.printData();
-    
-    FarmYear farmYear = new FarmYear(parser.data);
-    farmYear.inputData();
-    System.out.println(farmYear.getData());
-    farmYear.printData();
+    parser.saveFile("example.txt");
+
   }
 
 }
