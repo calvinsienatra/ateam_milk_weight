@@ -120,6 +120,7 @@ public class InputParser {
    * @throws IOException
    */
   public static void main(String[] args) throws IOException {
+<<<<<<< HEAD
     InputParser parser = new InputParser();
     
     // edit file path to run on your machine
@@ -130,6 +131,21 @@ public class InputParser {
     parser.printData();
     parser.saveFile("example.txt");
 
+=======
+//    InputParser parser = new InputParser();
+//    
+//    // edit file path to run on your machine
+//    parser.inputData(
+//        "C:\\Users\\ajshe\\OneDrive\\Documents\\cs400\\ateam_milk_weight\\milk\\small\\2019-1.csv");
+//    System.out.println(parser.data.keySet());
+//    System.out.println(parser.data.getV("Farm 2"));
+//    parser.printData();
+//    
+//    FarmYear farmYear = new FarmYear(parser.data);
+//    farmYear.inputData();
+//    System.out.println(farmYear.getData());
+//    farmYear.printData();
+>>>>>>> 50966b06400d52bcf9b1c866a963465f2c28ef7b
   }
 
 }
