@@ -14,8 +14,8 @@ public interface MilkWeight<T, U> {
 
   public void insertMilkWeight(LocalDate dateToSet, Integer milkWeight);
 
-  public int getMilkWeight();
+  public int getMilkWeight(T key);
 
-  public List<Integer> getMilkWeightList();
+  public List<Integer> getMilkWeightList(T key);
 
 }
