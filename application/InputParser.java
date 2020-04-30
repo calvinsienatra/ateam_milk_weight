@@ -83,6 +83,10 @@ public class InputParser {
     }
 
   }
+  
+  public DataMap<String, String, Integer> getData(){
+    return data;
+  }
 
   /**
    * @param args
