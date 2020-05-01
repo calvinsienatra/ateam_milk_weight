@@ -1,0 +1,303 @@
+################## Annual Report ##################
+---Annual Report for FarmIDs: [Farm 70, Farm 73, Farm 74, Farm 71, Farm 72, Farm 77, Farm 78, Farm 75, Farm 76, Farm 79, Farm 110, Farm 111, Farm 116, Farm 117, Farm 114, Farm 115, Farm 112, Farm 113, Farm 62, Farm 63, Farm 60, Farm 61, Farm 66, Farm 67, Farm 64, Farm 65, Farm 68, Farm 69, Farm 100, Farm 107, Farm 108, Farm 105, Farm 106, Farm 103, Farm 104, Farm 101, Farm 102, Farm 51, Farm 52, Farm 109, Farm 50, Farm 55, Farm 56, Farm 53, Farm 54, Farm 59, Farm 57, Farm 58, Farm 40, Farm 41, Farm 44, Farm 45, Farm 42, Farm 43, Farm 48, Farm 49, Farm 46, Farm 47, Farm 39, Farm 30, Farm 33, Farm 34, Farm 31, Farm 32, Farm 37, Farm 38, Farm 35, Farm 36, Farm 28, Farm 29, Farm 22, Farm 23, Farm 20, Farm 21, Farm 26, Farm 27, Farm 24, Farm 25, Farm 19, Farm 18, Farm 91, Farm 92, Farm 90, Farm 95, Farm 96, Farm 93, Farm 94, Farm 99, Farm 97, Farm 98, Farm 80, Farm 81, Farm 84, Farm 85, Farm 82, Farm 83, Farm 88, Farm 89, Farm 86, Farm 87]
+---Year: 2019
+
+#########Farm Id: Farm 70
+        -Milk Weight %: 0.4
+
+#########Farm Id: Farm 73
+        -Milk Weight %: 0.32
+
+#########Farm Id: Farm 74
+        -Milk Weight %: 0.78
+
+#########Farm Id: Farm 71
+        -Milk Weight %: 1.31
+
+#########Farm Id: Farm 72
+        -Milk Weight %: 2.1
+
+#########Farm Id: Farm 77
+        -Milk Weight %: 1.19
+
+#########Farm Id: Farm 78
+        -Milk Weight %: 0.98
+
+#########Farm Id: Farm 75
+        -Milk Weight %: 0.89
+
+#########Farm Id: Farm 76
+        -Milk Weight %: 0.45
+
+#########Farm Id: Farm 79
+        -Milk Weight %: 0.36
+
+#########Farm Id: Farm 110
+        -Milk Weight %: 0.44
+
+#########Farm Id: Farm 111
+        -Milk Weight %: 0.31
+
+#########Farm Id: Farm 116
+        -Milk Weight %: 1.32
+
+#########Farm Id: Farm 117
+        -Milk Weight %: 0.44
+
+#########Farm Id: Farm 114
+        -Milk Weight %: 0.46
+
+#########Farm Id: Farm 115
+        -Milk Weight %: 1.01
+
+#########Farm Id: Farm 112
+        -Milk Weight %: 2.02
+
+#########Farm Id: Farm 113
+        -Milk Weight %: 1.0
+
+#########Farm Id: Farm 62
+        -Milk Weight %: 1.1
+
+#########Farm Id: Farm 63
+        -Milk Weight %: 2.01
+
+#########Farm Id: Farm 60
+        -Milk Weight %: 1.03
+
+#########Farm Id: Farm 61
+        -Milk Weight %: 2.04
+
+#########Farm Id: Farm 66
+        -Milk Weight %: 0.12
+
+#########Farm Id: Farm 67
+        -Milk Weight %: 1.98
+
+#########Farm Id: Farm 64
+        -Milk Weight %: 1.98
+
+#########Farm Id: Farm 65
+        -Milk Weight %: 0.71
+
+#########Farm Id: Farm 68
+        -Milk Weight %: 1.19
+
+#########Farm Id: Farm 69
+        -Milk Weight %: 1.04
+
+#########Farm Id: Farm 100
+        -Milk Weight %: 1.06
+
+#########Farm Id: Farm 107
+        -Milk Weight %: 0.99
+
+#########Farm Id: Farm 108
+        -Milk Weight %: 0.16
+
+#########Farm Id: Farm 105
+        -Milk Weight %: 0.53
+
+#########Farm Id: Farm 106
+        -Milk Weight %: 1.0
+
+#########Farm Id: Farm 103
+        -Milk Weight %: 0.3
+
+#########Farm Id: Farm 104
+        -Milk Weight %: 0.34
+
+#########Farm Id: Farm 101
+        -Milk Weight %: 0.9
+
+#########Farm Id: Farm 102
+        -Milk Weight %: 2.02
+
+#########Farm Id: Farm 51
+        -Milk Weight %: 0.73
+
+#########Farm Id: Farm 52
+        -Milk Weight %: 0.79
+
+#########Farm Id: Farm 109
+        -Milk Weight %: 0.41
+
+#########Farm Id: Farm 50
+        -Milk Weight %: 2.04
+
+#########Farm Id: Farm 55
+        -Milk Weight %: 1.98
+
+#########Farm Id: Farm 56
+        -Milk Weight %: 0.61
+
+#########Farm Id: Farm 53
+        -Milk Weight %: 1.24
+
+#########Farm Id: Farm 54
+        -Milk Weight %: 0.94
+
+#########Farm Id: Farm 59
+        -Milk Weight %: 1.99
+
+#########Farm Id: Farm 57
+        -Milk Weight %: 0.81
+
+#########Farm Id: Farm 58
+        -Milk Weight %: 2.07
+
+#########Farm Id: Farm 40
+        -Milk Weight %: 1.88
+
+#########Farm Id: Farm 41
+        -Milk Weight %: 2.08
+
+#########Farm Id: Farm 44
+        -Milk Weight %: 0.48
+
+#########Farm Id: Farm 45
+        -Milk Weight %: 1.08
+
+#########Farm Id: Farm 42
+        -Milk Weight %: 1.91
+
+#########Farm Id: Farm 43
+        -Milk Weight %: 0.35
+
+#########Farm Id: Farm 48
+        -Milk Weight %: 0.37
+
+#########Farm Id: Farm 49
+        -Milk Weight %: 0.6
+
+#########Farm Id: Farm 46
+        -Milk Weight %: 1.17
+
+#########Farm Id: Farm 47
+        -Milk Weight %: 1.28
+
+#########Farm Id: Farm 39
+        -Milk Weight %: 0.27
+
+#########Farm Id: Farm 30
+        -Milk Weight %: 1.37
+
+#########Farm Id: Farm 33
+        -Milk Weight %: 0.24
+
+#########Farm Id: Farm 34
+        -Milk Weight %: 0.35
+
+#########Farm Id: Farm 31
+        -Milk Weight %: 1.14
+
+#########Farm Id: Farm 32
+        -Milk Weight %: 0.29
+
+#########Farm Id: Farm 37
+        -Milk Weight %: 0.78
+
+#########Farm Id: Farm 38
+        -Milk Weight %: 2.05
+
+#########Farm Id: Farm 35
+        -Milk Weight %: 1.95
+
+#########Farm Id: Farm 36
+        -Milk Weight %: 0.23
+
+#########Farm Id: Farm 28
+        -Milk Weight %: 2.04
+
+#########Farm Id: Farm 29
+        -Milk Weight %: 0.52
+
+#########Farm Id: Farm 22
+        -Milk Weight %: 1.93
+
+#########Farm Id: Farm 23
+        -Milk Weight %: 1.21
+
+#########Farm Id: Farm 20
+        -Milk Weight %: 1.39
+
+#########Farm Id: Farm 21
+        -Milk Weight %: 0.46
+
+#########Farm Id: Farm 26
+        -Milk Weight %: 2.0
+
+#########Farm Id: Farm 27
+        -Milk Weight %: 0.36
+
+#########Farm Id: Farm 24
+        -Milk Weight %: 0.42
+
+#########Farm Id: Farm 25
+        -Milk Weight %: 2.05
+
+#########Farm Id: Farm 19
+        -Milk Weight %: 0.24
+
+#########Farm Id: Farm 18
+        -Milk Weight %: 0.28
+
+#########Farm Id: Farm 91
+        -Milk Weight %: 1.06
+
+#########Farm Id: Farm 92
+        -Milk Weight %: 0.41
+
+#########Farm Id: Farm 90
+        -Milk Weight %: 1.88
+
+#########Farm Id: Farm 95
+        -Milk Weight %: 0.39
+
+#########Farm Id: Farm 96
+        -Milk Weight %: 0.96
+
+#########Farm Id: Farm 93
+        -Milk Weight %: 1.99
+
+#########Farm Id: Farm 94
+        -Milk Weight %: 0.4
+
+#########Farm Id: Farm 99
+        -Milk Weight %: 1.38
+
+#########Farm Id: Farm 97
+        -Milk Weight %: 0.42
+
+#########Farm Id: Farm 98
+        -Milk Weight %: 1.93
+
+#########Farm Id: Farm 80
+        -Milk Weight %: 0.98
+
+#########Farm Id: Farm 81
+        -Milk Weight %: 1.26
+
+#########Farm Id: Farm 84
+        -Milk Weight %: 0.26
+
+#########Farm Id: Farm 85
+        -Milk Weight %: 1.12
+
+#########Farm Id: Farm 82
+        -Milk Weight %: 0.36
+
+#########Farm Id: Farm 83
+        -Milk Weight %: 0.95
+
+#########Farm Id: Farm 88
+        -Milk Weight %: 0.67
+
+#########Farm Id: Farm 89
+        -Milk Weight %: 0.41
+
+#########Farm Id: Farm 86
+        -Milk Weight %: 0.3
+
+#########Farm Id: Farm 87
+        -Milk Weight %: 0.21
