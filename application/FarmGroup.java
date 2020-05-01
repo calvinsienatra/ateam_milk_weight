@@ -114,7 +114,6 @@ public class FarmGroup {
 
     // Create temp farm instance
     Farm farm = farms.get(farmId);
-    System.out.println(farm);
 
     // Insert milkFace into that farm instance
     farm.insertMilkWeight(dateToSet, milkWeight);
@@ -157,11 +156,6 @@ public class FarmGroup {
 
     // Create farm instance of given farm
     Farm farm = farms.get(farmId);
-
-    System.out.println(farmId);
-    System.out.println(farms.keySet());
-    System.out.println(farm);
-    System.out.println();
 
     if (farm == null) { // If farm is null, throw exception
       throw new NoSuchFieldException("Error: Invalid farm id!");
