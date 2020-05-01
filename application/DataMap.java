@@ -107,7 +107,12 @@ public class DataMap<K1, K2, V> {
   public boolean containsKeys(K1 key, K2 key2) {
     return data.containsKey(key) && data.get(key).containsKey(key2);
   }
-
+  
+  /**
+   * Gets the keys of the hashmap
+   * 
+   * @return
+   */
   public Set<K1> keySet() {
     return data.keySet();
   }
