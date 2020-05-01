@@ -1,9 +1,9 @@
 //////////////////// ALL ASSIGNMENTS INCLUDE THIS SECTION /////////////////////
 //
 // Title: a2
-// Files: Main.java, MilkWeight.java, DataMap.java, InputParser.java, FarmMonth.java, FarmYear.java,
-// Farm.java, FarmGroup.java, ExportData.java
-//
+// Files: Main.java, DataMap.java, ExportData.java, Farm.java, FarmGroup.java,
+// FarmMonth.java, FarmYear.java, InputParser.java, MilkWeight.java,
+// Months.java
 // Course: CS 400, Spring, 2020
 //
 // Author: Adam Shedivy, Calvin Sienatra, Charlie Mrkvicka
@@ -35,7 +35,7 @@ import java.util.MissingFormatArgumentException;
  * Farm year class creates an instance of specific year on a farm and contains the FarmMonth
  * instances of that year in a HashMap
  * 
- * @author ajshe
+ * @author aTeam 131
  *
  */
 public class FarmYear implements MilkWeight<Integer, Integer> {
@@ -58,7 +58,7 @@ public class FarmYear implements MilkWeight<Integer, Integer> {
   /**
    * Insert Milk Weight on certain date
    * 
-   * @param dateToSet- Date to insert on
+   * @param dateToSet-  Date to insert on
    * @param milkWeight- Milk weight of the date
    */
   @Override
@@ -133,4 +133,4 @@ public class FarmYear implements MilkWeight<Integer, Integer> {
     return totalMilkWeight;
   }
 
-} // end FarmYear class
+}
