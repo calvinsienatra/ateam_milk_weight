@@ -75,6 +75,7 @@ public class ExportData {
       writer = new FileWriter(file);
       bw = new BufferedWriter(writer);
       ArrayList<Double> results = farm.getFarmReport(farmID, year);
+      System.out.println(results);
       bw.write("################## Farm Report ##################");
       bw.newLine();
       bw.write("---Farm Report: " + farmID);
@@ -85,7 +86,7 @@ public class ExportData {
       for (int i = 0; i < 12; i++) {
         Double milkWeightPercentage = results.get(i);
         String month = generateMonth(i);
-        bw.write(month + " : " + milkWeightPercentage);
+        bw.write(month + " : " + milkWeightPercentage + "%" + "\n");
       }
     } catch (Exception e) {
       e.printStackTrace();
@@ -93,10 +94,6 @@ public class ExportData {
       if (bw != null) {
         bw.flush();
         bw.close();
-      }
-      if (writer != null) {
-        writer.flush();
-        writer.close();
       }
     }
   }
@@ -134,6 +131,7 @@ public class ExportData {
         bw.write("#########Farm Id: " + farmIDString);
         bw.newLine();
         bw.write("        -Milk Weight %: " + results.get(farmIDString));
+        bw.newLine();
       }
     } catch (Exception e) {
       e.printStackTrace();
@@ -141,10 +139,6 @@ public class ExportData {
       if (bw != null) {
         bw.flush();
         bw.close();
-      }
-      if (writer != null) {
-        writer.flush();
-        writer.close();
       }
     }
 
@@ -194,10 +188,6 @@ public class ExportData {
         bw.flush();
         bw.close();
       }
-      if (writer != null) {
-        writer.flush();
-        writer.close();
-      }
     }
   }
 
@@ -228,6 +218,7 @@ public class ExportData {
         bw.write("#########Farm Id: " + farmIDString);
         bw.newLine();
         bw.write("        -Milk Weight %: " + results.get(farmIDString));
+        bw.newLine();
       }
     } catch (Exception e) {
       e.printStackTrace();
@@ -235,10 +226,6 @@ public class ExportData {
       if (bw != null) {
         bw.flush();
         bw.close();
-      }
-      if (writer != null) {
-        writer.flush();
-        writer.close();
       }
     }
   }

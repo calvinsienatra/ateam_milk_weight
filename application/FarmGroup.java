@@ -81,7 +81,6 @@ public class FarmGroup {
    * @return the total milk weight of the year and month
    */
 
-
   private int getTotalMilkWeight(int year, int month) throws MissingFormatArgumentException {
     Set<String> farmIds = farms.keySet();
 
@@ -257,7 +256,6 @@ public class FarmGroup {
     }
 
     HashMap<String, Double> calculatedPercentage = new HashMap<>();
-
 
     for (String farmId : filteredFarmIds) {
       int curMilkWeight = farms.get(farmId).getMilkWeight(year);
