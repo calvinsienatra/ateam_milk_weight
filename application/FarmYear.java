@@ -72,8 +72,6 @@ public class FarmYear implements MilkWeight<Integer, Integer> {
     // Create a temp FarmMonth instance to insert milkWeight in
     FarmMonth temp = data.get(dateToSet.getMonthValue());
 
-    System.out.println(dateToSet + ": " + temp);
-
     // Call insertMilkWeight on the temp FarmMonth instance
     temp.insertMilkWeight(dateToSet, milkWeight);
 
@@ -91,8 +89,6 @@ public class FarmYear implements MilkWeight<Integer, Integer> {
    */
   @Override
   public int getMilkWeight(Integer key) throws MissingFormatArgumentException {
-    System.out.println(key);
-    System.out.println(data.keySet());
 
     // Throw exception if the year isn't formatted correctly, less than 12 months
     if (data.keySet().size() < 12) {
