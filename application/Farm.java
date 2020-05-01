@@ -62,7 +62,7 @@ public class Farm implements MilkWeight<Integer, Integer> {
   /**
    * Insert Milk Weight on certain date
    * 
-   * @param dateToSet-  Date to insert on
+   * @param dateToSet- Date to insert on
    * @param milkWeight- Milk weight of the date
    */
   @Override

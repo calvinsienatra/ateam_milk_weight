@@ -53,8 +53,8 @@ public class DataMap<K1, K2, V> {
   /**
    * Insert value into DataMap
    * 
-   * @param key   - key
-   * @param key2  - second key
+   * @param key - key
+   * @param key2 - second key
    * @param value - value to insert
    */
   public void putV(K1 key, K2 key2, V value) {
@@ -71,7 +71,7 @@ public class DataMap<K1, K2, V> {
   /**
    * get values for DataMap
    * 
-   * @param key  - key
+   * @param key - key
    * @param key2 - key2
    * @return the deep data value of the given keys
    */
@@ -100,7 +100,7 @@ public class DataMap<K1, K2, V> {
   /**
    * assert two given keys exist by calling containsKey(key)
    * 
-   * @param key  - key
+   * @param key - key
    * @param key2 - key2
    * @return - true is key and key2 exist, else false
    */

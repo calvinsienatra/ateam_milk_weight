@@ -93,8 +93,8 @@ public class ExportData {
    * export Farm Report to a given File
    * 
    * @param fileName file name to save
-   * @param farmID   farm id to save
-   * @param year     year to save
+   * @param farmID farm id to save
+   * @param year year to save
    * @throws IOException if writing error occurs
    */
   public void exportFarmReport(String fileName, String farmID, Integer year) throws IOException {
@@ -144,7 +144,7 @@ public class ExportData {
    * Export Annual Report to file
    * 
    * @param fileName file name to save the report to
-   * @param year     year to get the report from
+   * @param year year to get the report from
    * @throws IOException if writing failed
    */
   public void exportAnnualreport(String fileName, Integer year) throws IOException {
@@ -195,7 +195,7 @@ public class ExportData {
    * 
    * @param fileName file name to write the file to
    * @param fromDate from date to get the report
-   * @param toDate   to date to get the report
+   * @param toDate to date to get the report
    * @throws IOException if a writing error occurs
    */
   public void exportDateRangeReport(String fileName, LocalDate fromDate, LocalDate toDate)
@@ -249,8 +249,8 @@ public class ExportData {
    * Export the monthly report
    * 
    * @param fileName file name to save it to
-   * @param year     year to get the report from
-   * @param month    month to get the report from
+   * @param year year to get the report from
+   * @param month month to get the report from
    * @throws IOException if a writing error occurs
    */
   public void exportMonthlyReport(String fileName, Integer year, Integer month) throws IOException {
