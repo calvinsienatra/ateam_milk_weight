@@ -80,11 +80,9 @@ public class FarmGroup {
    * @param month month of the year to get the milk weight
    * @return the total milk weight of the year and month
    */
-<<<<<<< HEAD
-  public int getTotalMilkWeight(int year, int month) throws MissingFormatArgumentException {
-=======
-  private int getTotalMilkWeight(int year, int month) throws MissingFormatArgumentException{
->>>>>>> c64b232d330404eab5539da95367357a47fa8347
+
+
+  private int getTotalMilkWeight(int year, int month) throws MissingFormatArgumentException {
     Set<String> farmIds = farms.keySet();
 
     int totalMilkWeight = 0;
@@ -100,11 +98,7 @@ public class FarmGroup {
 
     return totalMilkWeight;
   }
-<<<<<<< HEAD
 
-=======
-  
->>>>>>> c64b232d330404eab5539da95367357a47fa8347
   /**
    * Inserts the milk weight for the given date and farm
    * 
@@ -263,8 +257,7 @@ public class FarmGroup {
     }
 
     HashMap<String, Double> calculatedPercentage = new HashMap<>();
-<<<<<<< HEAD
-    // Double total = 0.0;
+
 
     for (String farmId : filteredFarmIds) {
       int curMilkWeight = farms.get(farmId).getMilkWeight(year);
@@ -273,26 +266,8 @@ public class FarmGroup {
 
       calculatedPercentage.put(farmId, (double) Math.round(curPercentage * 100.0) / 100.0);
 
-      // total += curPercentage;
-
     }
 
-    // System.out.println("total: " + total);
-
-
-=======
-    
-    for(String farmId: filteredFarmIds) {
-      int curMilkWeight = farms.get(farmId).getMilkWeight(year);
-      
-      Double curPercentage = (((double)curMilkWeight) / totalMilkWeightYear) * 100;
-      
-      calculatedPercentage.put(farmId, (double)Math.round(curPercentage * 100.0) / 100.0);
-      
-    }
-    
-    
->>>>>>> c64b232d330404eab5539da95367357a47fa8347
     return calculatedPercentage;
   }
 
