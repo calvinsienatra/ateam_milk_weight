@@ -318,6 +318,47 @@ public class FarmGroup {
     return calculatedPercentage;
   }
   
+  public int getTotalMilkWeightForAllFromDateToDate(LocalDate fromDate, LocalDate toDate) throws NoSuchElementException{
+    Set<String> farmIds = farms.keySet();
+    Set <String> filteredFarmIds = new HashSet<>();
+    
+    for(String farmId: farmIds) {
+      try {
+        farms.get(farmId).getMilkWeight(fromDate.getYear(), 1);
+        filteredFarmIds.add(farmId);
+      }catch(MissingFormatArgumentException e) {
+        // Continue
+      }
+    }
+    
+    int totalMilkWeightDateToDate = 0;
+    
+    HashMap<String, Integer> farmTotal = new HashMap<>();
+    
+    while(!fromDate.equals(toDate.plusDays(1))) {
+      for(String farmId: filteredFarmIds) {
+        
+        totalMilkWeightDateToDate += farms.get(farmId).getMilkWeight(fromDate.getYear(), 
+            fromDate.getMonthValue(), fromDate.getDayOfMonth());
+        
+        if(farmTotal.get(farmId) == null) {
+          farmTotal.put(farmId, farms.get(farmId).getMilkWeight(fromDate.getYear(), 
+                  fromDate.getMonthValue(), fromDate.getDayOfMonth()));
+        }else {
+          farmTotal.put(farmId, farmTotal.get(farmId)+farms.get(farmId).getMilkWeight(fromDate.getYear(), 
+                  fromDate.getMonthValue(), fromDate.getDayOfMonth()));
+        }
+        
+      }
+      
+      
+      fromDate = fromDate.plusDays(1);
+    }
+    
+    return totalMilkWeightDateToDate;
+    
+  }
+  
   /**
    * Gets the report from a date to a date for every farm
    * 
@@ -332,13 +373,23 @@ public class FarmGroup {
     }
     
     Set<String> farmIds = farms.keySet();
+    Set <String> filteredFarmIds = new HashSet<>();
+    
+    for(String farmId: farmIds) {
+      try {
+        farms.get(farmId).getMilkWeight(fromDate.getYear(), 1);
+        filteredFarmIds.add(farmId);
+      }catch(MissingFormatArgumentException e) {
+        // Continue
+      }
+    }
     
     int totalMilkWeightDateToDate = 0;
     
     HashMap<String, Integer> farmTotal = new HashMap<>();
     
     while(!fromDate.equals(toDate.plusDays(1))) {
-      for(String farmId: farmIds) {
+      for(String farmId: filteredFarmIds) {
         
         totalMilkWeightDateToDate += farms.get(farmId).getMilkWeight(fromDate.getYear(), 
             fromDate.getMonthValue(), fromDate.getDayOfMonth());
@@ -361,9 +412,9 @@ public class FarmGroup {
     HashMap<String, Double> calculatedPercentage = new HashMap<>();
     
     for(String farmId: farmTotal.keySet()) {
-      Double curPercentage = ((double) (farmTotal.get(farmId)) / totalMilkWeightDateToDate);
+      Double curPercentage = (((double)farmTotal.get(farmId)) / totalMilkWeightDateToDate) * 100;
       
-      calculatedPercentage.put(farmId, curPercentage);
+      calculatedPercentage.put(farmId, (double)Math.round(curPercentage * 100.0) / 100.0);
     }
     
     

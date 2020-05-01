@@ -44,6 +44,9 @@ public class FarmMonth implements MilkWeight<Integer, Integer> {
    */
   @Override
   public int getMilkWeight(Integer key) {
+    if(!data.containsKey(key)) {
+      return 0;
+    }
     return data.get(key);
   }
 

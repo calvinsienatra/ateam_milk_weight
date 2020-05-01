@@ -27,10 +27,12 @@ package application;
 
 import java.io.File;
 import java.io.IOException;
+import java.time.DateTimeException;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.IllegalFormatConversionException;
 import java.util.List;
 import java.util.MissingFormatArgumentException;
 import java.util.NoSuchElementException;
@@ -516,7 +518,35 @@ public class Main extends Application {
     EventHandler<ActionEvent> getDateReportEvent = new EventHandler<ActionEvent>() {
       public void handle(ActionEvent e) {
         // EVENT IF GET DATE REPORT IS CLICKED
-
+        if(fromDateText.getText() != null && toDateText.getText() != null) {
+          boolean fuse = true;
+          HashMap<String, Double> dateRangeReport = null;
+          try {
+            LocalDate parsedFromDate = parseDate(fromDateText.getText());
+            LocalDate parsedToDate = parseDate(toDateText.getText());
+            
+            try {
+              dateRangeReport = cheeseFactory.getDateRangeReport(parsedFromDate, parsedToDate);
+              totalMilkWeightText = cheeseFactory.getTotalMilkWeightForAllFromDateToDate(parsedFromDate, parsedToDate);              
+              
+            }catch(DateTimeException e2) {
+              fuse = false;
+              generateStatusMessage("Error: from date is larger than to date!");
+            }
+            
+          }catch(IllegalArgumentException e1) {
+            fuse = false;
+            generateStatusMessage("Error: " + e1.getMessage());
+          }
+          
+          if(fuse) {
+            generateMonthlyReportGraph(dateRangeReport);
+            generateStatusMessage("Date range report successfully generated!");
+            generateOptionPane();
+          }
+          
+          
+        }
 
       }
     };
@@ -524,6 +554,32 @@ public class Main extends Application {
     getDateReportButton.setOnAction(getDateReportEvent); // Set the action of get date report button
 
     root.setRight(getReportPanelPane);
+  }
+  
+  private LocalDate parseDate(String date) throws IllegalArgumentException{
+    String[] dateSplitted = date.split("/");
+    
+    if(dateSplitted.length < 3) {
+      throw new IllegalArgumentException("Date give is an incorrect format!");
+    }
+    
+    LocalDate parsedDate = null;
+    
+    try {
+      Integer month = Integer.parseInt(dateSplitted[0]);
+      Integer day = Integer.parseInt(dateSplitted[1]);
+      Integer year = Integer.parseInt(dateSplitted[2]);
+      
+      parsedDate = LocalDate.of(year, month, day);
+      
+      
+    }catch(NumberFormatException e) {
+      throw new IllegalArgumentException("Date given is not an integer!");
+    }catch(DateTimeException e) {
+      throw new IllegalArgumentException("Date given is invalid!");
+    }
+    
+    return parsedDate;
   }
 
   private void generateTitle() {
@@ -539,7 +595,44 @@ public class Main extends Application {
     root.setTop(titleBox);
   }
   
-private void generateMonthlyReportGraph(HashMap<String, Double> monthlyReport) {
+  private void generateDateRangeReportGraph(HashMap<String, Double> dateRangeReport) {
+    
+    // defining the axes
+    final CategoryAxis xAxis = new CategoryAxis(); // plot against time
+    final NumberAxis yAxis = new NumberAxis();
+    xAxis.setLabel("Farms");
+    xAxis.setAnimated(true); // axis animations are removed
+    yAxis.setLabel("Milk Weight Percentage");
+    yAxis.setAnimated(true); // axis animations are removed
+    
+    final LineChart<String, Number> lineChart = new LineChart<>(xAxis, yAxis);
+    
+    lineChart.setAnimated(true);
+    
+    XYChart.Series<String, Number> farm = new XYChart.Series<>();
+    farm.setName("Farms");
+    
+    lineChart.getData().add(farm);
+    
+    Set<String> farmIds = dateRangeReport.keySet();
+    ArrayList<String> farmIdsSorted = new ArrayList<>();
+    
+    for(String farmId: farmIds) {
+      farmIdsSorted.add(farmId);
+    }
+    
+    Collections.sort(farmIdsSorted);
+    
+    
+    for(int i = 0; i < farmIdsSorted.size(); i++) {
+      farm.getData().add(new XYChart.Data<>(farmIdsSorted.get(i), dateRangeReport.get(farmIdsSorted.get(i))));
+    }
+
+    root.setCenter(lineChart);
+    
+  }
+  
+  private void generateMonthlyReportGraph(HashMap<String, Double> monthlyReport) {
     
     // defining the axes
     final CategoryAxis xAxis = new CategoryAxis(); // plot against time
