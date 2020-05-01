@@ -75,12 +75,15 @@ public class ExportData {
       writer = new FileWriter(file);
       bw = new BufferedWriter(writer);
       ArrayList<Double> results = farm.getFarmReport(farmID, year);
+      int totalMilkWeight = farm.getTotalMilkWeightForFarmAndYear(farmID, year);
       System.out.println(results);
       bw.write("################## Farm Report ##################");
       bw.newLine();
       bw.write("---Farm Report: " + farmID);
       bw.newLine();
       bw.write("---Year: " + year);
+      bw.newLine();
+      bw.write("***Total Milk Weights: " + totalMilkWeight);
       bw.newLine();
 
       for (int i = 0; i < 12; i++) {
@@ -119,11 +122,14 @@ public class ExportData {
       bw = new BufferedWriter(writer);
       HashMap<String, Double> results = farm.getAnnualReport(year);
       Set<String> farmIDs = results.keySet();
+      int totalMilkWeight = farm.getTotalMilkWeight(year);
       bw.write("################## Annual Report ##################");
       bw.newLine();
       bw.write("---Annual Report for FarmIDs: " + farmIDs.toString());
       bw.newLine();
       bw.write("---Year: " + year);
+      bw.newLine();
+      bw.write("***Total Milk Weights: " + totalMilkWeight);
       bw.newLine();
 
       for (String farmIDString : farmIDs) {
@@ -167,6 +173,7 @@ public class ExportData {
       bw = new BufferedWriter(writer);
       HashMap<String, Double> results = farm.getDateRangeReport(fromDate, toDate);
       Set<String> farmIDs = results.keySet();
+      int totalMilkWeight = farm.getTotalMilkWeightForAllFromDateToDate(fromDate, toDate);
       bw.write("################## Date Range Report ##################");
       bw.newLine();
       bw.write("---Date Range Report for FarmIDs: " + farmIDs.toString());
@@ -174,6 +181,8 @@ public class ExportData {
       bw.write("---From Date: " + fromDate);
       bw.newLine();
       bw.write("---To Date: " + toDate);
+      bw.write("***Total Milk Weights: " + totalMilkWeight);
+      bw.newLine();
 
       for (String farmIDString : farmIDs) {
         bw.newLine();
@@ -205,6 +214,7 @@ public class ExportData {
       bw = new BufferedWriter(writer);
       HashMap<String, Double> results = farm.getMonthlyReport(year, month);
       Set<String> farmIDs = results.keySet();
+      int totalMilkWeight = farm.getTotalMilkWeightForAllFarmAndMonth(year, month);
       bw.write("################## Monthly Report ##################");
       bw.newLine();
       bw.write("---Date Range Report for FarmIDs: " + farmIDs.toString());
@@ -212,6 +222,8 @@ public class ExportData {
       bw.write("---Year: " + year);
       bw.newLine();
       bw.write("---Month: " + generateMonth(month));
+      bw.write("***Total Milk Weights: " + totalMilkWeight);
+      bw.newLine();
 
       for (String farmIDString : farmIDs) {
         bw.newLine();
