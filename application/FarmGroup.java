@@ -49,7 +49,7 @@ public class FarmGroup {
    * @param month month of the year to get the milk weight
    * @return the total milk weight of the year and month
    */
-  public int getTotalMilkWeight(int year, int month) throws MissingFormatArgumentException{
+  private int getTotalMilkWeight(int year, int month) throws MissingFormatArgumentException{
     Set<String> farmIds = farms.keySet();
     
     int totalMilkWeight = 0;
@@ -64,38 +64,6 @@ public class FarmGroup {
     
     return totalMilkWeight;
   }
-  
-  /**
-   * Gets the total milk weight of the given date to a given date
-   * 
-   * @param dateFrom from date (inclusive)
-   * @param toFrom to date (inclusive)
-   * @throws DateTimeException if dateFrom is more than toDate
-   * @return the total milk weight from the given date to a date
-   */
-  /*public int getTotalMilkWeight(LocalDate dateFrom, LocalDate toDate) throws DateTimeException{
-    if(dateFrom.compareTo(toDate) > 0) {
-      throw new DateTimeException("Error: dateFrom is more than toDate");
-    }
-    
-    Set<String> farmIds = farms.keySet();
-    
-    int totalMilkWeight = 0;
-    
-    
-    
-    for(String farmId: farmIds) {
-      while(!dateFrom.equals(toDate.plusDays(1))) {
-        totalMilkWeight += farms.get(farmId).getMilkWeight(dateFrom.getYear(), 
-            dateFrom.getMonthValue(), dateFrom.getDayOfMonth(), toDate.getYear(), 
-            toDate.getMonthValue(), toDate.getDayOfMonth());
-        
-        dateFrom = dateFrom.plusDays(1);
-      }
-    }
-    
-    return totalMilkWeight;
-  }*/
   
   /**
    * Inserts the milk weight for the given date and farm
@@ -236,7 +204,6 @@ public class FarmGroup {
     }
     
     HashMap<String, Double> calculatedPercentage = new HashMap<>();
-    //Double total = 0.0;
     
     for(String farmId: filteredFarmIds) {
       int curMilkWeight = farms.get(farmId).getMilkWeight(year);
@@ -245,11 +212,7 @@ public class FarmGroup {
       
       calculatedPercentage.put(farmId, (double)Math.round(curPercentage * 100.0) / 100.0);
       
-      //total += curPercentage;
-      
     }
-    
-    //System.out.println("total: " + total);
     
     
     return calculatedPercentage;
