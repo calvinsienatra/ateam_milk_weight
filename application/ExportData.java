@@ -82,6 +82,8 @@ public class ExportData {
       bw.newLine();
       bw.write("---Year: " + year);
       bw.newLine();
+      bw.write("---Total Milk Weight: " + farm.getTotalMilkWeightForFarmAndYear(farmID, year) + " lbs");
+      bw.newLine();
 
       for (int i = 0; i < 12; i++) {
         Double milkWeightPercentage = results.get(i);
@@ -124,6 +126,8 @@ public class ExportData {
       bw.write("---Annual Report for FarmIDs: " + farmIDs.toString());
       bw.newLine();
       bw.write("---Year: " + year);
+      bw.newLine();
+      bw.write("---Total Milk Weight: " + farm.getTotalMilkWeightForAllFarmAndYear(year) + " lbs");
       bw.newLine();
 
       for (String farmIDString : farmIDs) {
@@ -174,6 +178,8 @@ public class ExportData {
       bw.write("---From Date: " + fromDate);
       bw.newLine();
       bw.write("---To Date: " + toDate);
+      bw.newLine();
+      bw.write("---Total Milk Weight: " + farm.getTotalMilkWeightForAllFromDateToDate(fromDate, toDate) + " lbs");
 
       for (String farmIDString : farmIDs) {
         bw.newLine();
@@ -212,6 +218,8 @@ public class ExportData {
       bw.write("---Year: " + year);
       bw.newLine();
       bw.write("---Month: " + generateMonth(month));
+      bw.newLine();
+      bw.write("---Total Milk Weight: " + farm.getTotalMilkWeightForAllFarmAndMonth(year, month) + " lbs");
 
       for (String farmIDString : farmIDs) {
         bw.newLine();
