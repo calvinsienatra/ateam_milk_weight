@@ -11,3 +11,12 @@ Team Members:
 
 
 None of us are on the same xteam together.
+
+
+This program requires all data for a farm to be complete (i.e. each farm needs to have a complete 12 month of milk weight data). All invalid data will be ignored.
+
+Instructions:
+The left combobox allows the right panel to change depending on what is selected. A user can load and save a graph through the load/save option and draw the graph on the latter option. The status text on the bottom left provides the user with error and success messages. 
+To save a file, it is required that the user generate the graph first and then go to the load/save panel to save the file.
+
+Future work: Add a filter data, add error checking
