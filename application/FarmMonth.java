@@ -1,39 +1,77 @@
+//////////////////// ALL ASSIGNMENTS INCLUDE THIS SECTION /////////////////////
+//
+// Title: a2
+// Files: Main.java, MilkWeight.java, DataMap.java, InputParser.java, FarmMonth.java, FarmYear.java,
+// Farm.java, FarmGroup.java, ExportData.java
+//
+// Course: CS 400, Spring, 2020
+//
+// Author: Adam Shedivy, Calvin Sienatra, Charlie Mrkvicka
+// Email: ajshedivy@wisc.edu,
+// Lecturer's Name: Debra Deppeler
+//
+///////////////////////////// CREDIT OUTSIDE HELP /////////////////////////////
+//
+// Students who get help from sources other than their partner must fully
+// acknowledge and credit those sources of help here. Instructors and TAs do
+// not need to be credited here, but tutors, friends, relatives, room mates,
+// strangers, and others do. If you received no outside help from either type
+// of source, then please explicitly indicate NONE.
+//
+// Persons: N/A
+// Online Sources: N/A
+//
+/////////////////////////////// 80 COLUMNS WIDE ///////////////////////////////
+
 package application;
 
 import java.time.LocalDate;
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Hashtable;
-import java.util.List;
 
+/**
+ * FarmMonth Class creates an instance of specific month on a farm and contains the milkweights from
+ * each day in a hashmap
+ * 
+ * @author Charlie
+ *
+ */
 public class FarmMonth implements MilkWeight<Integer, Integer> {
 
-  // Hashtable: Key(Day in month), Value(milkWeight of day)
+  // Hashmap: Key(Day in month), Value(milkWeight of day)
   private HashMap<Integer, Integer> data;
 
   // Total milk weight from the month
   private int totalMilkWeight;
-  
+
+  /**
+   * Default FarmMonth constructor that creates a new hashmap instance and initializes total milk
+   * weight to 0
+   */
   public FarmMonth() {
     data = new HashMap<>();
     totalMilkWeight = 0;
   }
-  
+
   /**
-   * 
    * Insert Milk Weight on certain day in month
    * 
+   * @param dateToSet- Date to insert on
+   * @param milkWeight- Milk weight of the date
    */
   @Override
   public void insertMilkWeight(LocalDate dateToSet, Integer milkWeight) {
+
+    // Insert the milkWeight into the hash of the specific day of the month
     data.put(dateToSet.getDayOfMonth(), milkWeight);
+
+    // Add milkWeight to totalMilkWeight
     totalMilkWeight += milkWeight;
   }
 
   /**
    * Get total milk weight from the entire month
    * 
-   * @return
+   * @return totalMilkWeight
    */
   public int getTotalMilkWeight() {
     return totalMilkWeight;
@@ -41,49 +79,16 @@ public class FarmMonth implements MilkWeight<Integer, Integer> {
 
   /**
    * Get milk weights from specific day
+   * 
+   * @param key- Specific day integer
+   * @return- milkWeight of given day or 0 if day isn't in hashmap
    */
   @Override
   public int getMilkWeight(Integer key) {
-    if(!data.containsKey(key)) {
-      return 0;
+    if (!data.containsKey(key)) {
+      return 0; // If the day isn't in the hashmap, return 0
     }
-    return data.get(key);
+    return data.get(key); // Return milkWeight of given day
   }
-
-  /**
-   * Get milk weights from the given fromDay to the end of the month
-   */
-  @Override
-  public List<Integer> getMilkWeightList(Integer key) {
-
-    List<Integer> list = new ArrayList<Integer>();
-    int counter = key;
-
-    while (data.get(counter) != null) {
-      list.add(data.get(counter));
-      counter++;
-    }
-
-    return list;
-  }
-
-  /**
-   * 
-   * Get milk weights from the given fromDay to toDay in a list
-   * 
-   */
-  public List<Integer> getMilkWeightList(Integer fromDay, Integer toDay) {
-
-    List<Integer> list = new ArrayList<Integer>();
-    int counter = fromDay;
-
-    while (counter != (toDay + 1) && data.get(counter) != null) {
-      list.add(data.get(counter));
-      counter++;
-    }
-
-    return list;
-  }
-
 
 }
