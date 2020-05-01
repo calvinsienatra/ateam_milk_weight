@@ -1,7 +1,9 @@
 //////////////////// ALL ASSIGNMENTS INCLUDE THIS SECTION /////////////////////
 //
 // Title: a2
-// Files: Main.java
+// Files: Main.java, DataMap.java, ExportData.java, Farm.java, FarmGroup.java,
+// FarmMonth.java, FarmYear.java, InputParser.java, MilkWeight.java,
+// Months.java
 // Course: CS 400, Spring, 2020
 //
 // Author: Adam Shedivy, Calvin Sienatra, Charlie Mrkvicka
@@ -20,9 +22,7 @@
 // Online Sources: N/A
 //
 /////////////////////////////// 80 COLUMNS WIDE ///////////////////////////////
-/********************************************
- * File: Main.java Date: 4/21/2020 Course: CS 400 Compiler: javac.exe Platform: Windows 10
- *******************************************/
+
 package application;
 
 import java.io.File;
@@ -64,8 +64,6 @@ import javafx.stage.DirectoryChooser;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 
-// TEST COMMENT
-
 /**
  * Main Milk weight application driver
  * 
@@ -73,27 +71,34 @@ import javafx.stage.Stage;
  *
  */
 public class Main extends Application {
-  private List<String> args;
+  // Sets the window resolution and title
   private static final int WINDOW_WIDTH = 1400;
   private static final int WINDOW_HEIGHT = 800;
   private static final String APP_TITLE = "Milk Weight App";
-  
+
+  // Field for the stage and the main borderpane
   private Stage mainStage;
   private BorderPane root;
-  
+
+  // Field for the cheese factory
   private FarmGroup cheeseFactory;
-  
+
+  // Field to store the milk weight total to be shown
   private int totalMilkWeightText = 0;
-  
+
+  // Field to store the type of graph being drawn
   private int saveType = -1;
-  
+
+  // Field to temporaily store data for saving into a file
   private String farmIdPlaceholder;
   private Integer yearPlaceholder;
   private Integer monthPlaceholder;
-  
   private LocalDate fromDatePlaceholder;
   private LocalDate toDatePlaceholder;
 
+  /**
+   * Generates the Load/Save panel of the stage
+   */
   private void generateLoadSavePanel() {
     TilePane loadSavePanelPane = new TilePane(); // Create the load panel pane
 
@@ -103,79 +108,85 @@ public class Main extends Application {
     // Construct an EventHandler for load data
     EventHandler<ActionEvent> loadEvent = new EventHandler<ActionEvent>() {
       public void handle(ActionEvent e) {
-        
+
+        // Create a new directory chooser
         DirectoryChooser chooseCSVDirectory = new DirectoryChooser();
-        File selectedDirectory = chooseCSVDirectory.showDialog(mainStage);
+        File selectedDirectory = chooseCSVDirectory.showDialog(mainStage); // Show the dialog
         boolean fuse = true;
-        
+
         try {
-          if(selectedDirectory != null) {
-            //System.out.println(selectedDirectory.getAbsolutePath());
-            System.out.println("TEST");
+          if (selectedDirectory != null) {
+            // Reset the cheese factory
             cheeseFactory = new FarmGroup();
-            
-            String pathToDir = selectedDirectory.getAbsolutePath();
-            
+
+            // Get the list of files inside the directory
             File[] listOfCSV = selectedDirectory.listFiles();
-            //System.out.println(listOfCSV);
-            
+
+            // Create a new InputParser object
             InputParser parser = new InputParser();
-            
-            for(File file: listOfCSV) {
-              System.out.println(file.getName());
-              
+
+            // Parse every file
+            for (File file : listOfCSV) {
+              // Reset the parser
               parser = new InputParser();
               try {
-                parser.inputData(file.getAbsolutePath());
+                parser.inputData(file.getAbsolutePath()); // Parse the file
               } catch (IOException e1) {
                 // Error opening file
                 fuse = false;
-                System.out.println("Error: File cannot be opened!");
                 generateStatusMessage("Error. File cannot be opened!");
                 break;
               } catch (Exception e2) {
-                System.out.println(e2);
+                generateStatusMessage("Error. Unknown exception occured when opening file!");
               }
-              
-              // parser.printData();
+
+              // Get the data parsed
               DataMap<String, String, Integer> inputData = parser.getData();
-              
+
+              // Get the farm ids
               Set<String> farmIds = inputData.keySet();
-              for(String farmId: farmIds) {
-                for(String date: inputData.getV(farmId).keySet()) {
+              for (String farmId : farmIds) {
+                for (String date : inputData.getV(farmId).keySet()) { // Put in each date given for
+                                                                      // the farm
                   try {
-                  String[] splittedDate = date.split("-");
-                  Integer year = Integer.parseInt(splittedDate[0]);
-                  Integer month = Integer.parseInt(splittedDate[1]);
-                  Integer day = Integer.parseInt(splittedDate[2]);
-                  
-                  LocalDate convDate = LocalDate.of(year, month, day);
-                  
-                  cheeseFactory.insertMilkWeight(farmId, convDate, inputData.getDeepV(farmId, date));
-                  }catch(Exception e3) {
-                    System.out.println(e3);
+                    // Parse the data
+                    String[] splittedDate = date.split("-");
+                    Integer year = Integer.parseInt(splittedDate[0]);
+                    Integer month = Integer.parseInt(splittedDate[1]);
+                    Integer day = Integer.parseInt(splittedDate[2]);
+
+                    LocalDate convDate = LocalDate.of(year, month, day);
+
+                    // Insert the milk weight
+                    cheeseFactory.insertMilkWeight(farmId, convDate,
+                        inputData.getDeepV(farmId, date));
+                  } catch (Exception e3) {
+                    generateStatusMessage("Error. Parsing file failed, please check your files!");
                   }
-                  
+
                 }
-                
+
               }
-              
+
             }
-            
-            
-          }else {
+
+
+          } else {
+            // If directory is empty
             fuse = false;
             generateStatusMessage("Error. Directory is empty!");
           }
-        }catch(Exception E) {
+        } catch (Exception E) {
+          // If an exception occurs
           fuse = false;
           generateStatusMessage("Error. Loading file failed!");
         }
-        
-        if(fuse) {
+
+        if (fuse) {
+          // If successful, generate a new status message
           generateStatusMessage("File successfully loaded!");
         }
-        
+
       }
     };
 
@@ -185,85 +196,92 @@ public class Main extends Application {
     EventHandler<ActionEvent> saveEvent = new EventHandler<ActionEvent>() {
       public void handle(ActionEvent e) {
         // EVENT IF SAVE DATA IS CLICKED
-        if(saveType == -1) {
+        if (saveType == -1) {
+          // If no graph has been generated
           generateStatusMessage("Please generate a graph first!");
-        }else if(saveType == 1) {
+        } else if (saveType == 1) { // If saving farm report
+          // Create a new exporter object
           ExportData exportFarmReport = new ExportData(cheeseFactory);
-          
-          FileChooser fileChooser = new FileChooser();
-          
-          //Set extension filter for text files
-          FileChooser.ExtensionFilter extFilter = new FileChooser.ExtensionFilter("TXT files (*.txt)", "*.txt");
-          fileChooser.getExtensionFilters().add(extFilter);
 
-          //Show save file dialog
+          // Open a new save file chooser
+          FileChooser fileChooser = new FileChooser();
+          // Set file extension
+          FileChooser.ExtensionFilter extFilter =
+              new FileChooser.ExtensionFilter("TXT files (*.txt)", "*.txt");
+          fileChooser.getExtensionFilters().add(extFilter);
+          // Open the dialog
           File file = fileChooser.showSaveDialog(mainStage);
-          
-          System.out.println(file.getAbsolutePath());
-          
+
           try {
-            exportFarmReport.exportFarmReport(file.getAbsolutePath(), farmIdPlaceholder, yearPlaceholder);
+            // Generate the report
+            exportFarmReport.exportFarmReport(file.getAbsolutePath(), farmIdPlaceholder,
+                yearPlaceholder);
           } catch (IOException e1) {
+            // If writing failed
             generateStatusMessage("Error saving file!");
           }
-          
-          
-        }else if(saveType == 2) {
-          ExportData exportFarmReport = new ExportData(cheeseFactory);
-          
-          FileChooser fileChooser = new FileChooser();
-          
-          //Set extension filter for text files
-          FileChooser.ExtensionFilter extFilter = new FileChooser.ExtensionFilter("TXT files (*.txt)", "*.txt");
-          fileChooser.getExtensionFilters().add(extFilter);
 
-          //Show save file dialog
+        } else if (saveType == 2) { // If saving annual report
+          // Create a new exporter object
+          ExportData exportFarmReport = new ExportData(cheeseFactory);
+
+          // Open a new save file chooser
+          FileChooser fileChooser = new FileChooser();
+          // Set file extension
+          FileChooser.ExtensionFilter extFilter =
+              new FileChooser.ExtensionFilter("TXT files (*.txt)", "*.txt");
+          fileChooser.getExtensionFilters().add(extFilter);
+          // Open the dialog
           File file = fileChooser.showSaveDialog(mainStage);
-          
-          System.out.println(file.getAbsolutePath());
-          
+
           try {
+            // Generate the report
             exportFarmReport.exportAnnualreport(file.getAbsolutePath(), yearPlaceholder);
           } catch (IOException e1) {
+            // If writing failed
             generateStatusMessage("Error saving file!");
           }
-        }else if(saveType == 3) {
+        } else if (saveType == 3) { // If saving monthly report
+          // Create a new exporter object
           ExportData exportFarmReport = new ExportData(cheeseFactory);
-          
-          FileChooser fileChooser = new FileChooser();
-          
-          //Set extension filter for text files
-          FileChooser.ExtensionFilter extFilter = new FileChooser.ExtensionFilter("TXT files (*.txt)", "*.txt");
-          fileChooser.getExtensionFilters().add(extFilter);
 
-          //Show save file dialog
+          // Open a new save file chooser
+          FileChooser fileChooser = new FileChooser();
+          // Set file extension
+          FileChooser.ExtensionFilter extFilter =
+              new FileChooser.ExtensionFilter("TXT files (*.txt)", "*.txt");
+          fileChooser.getExtensionFilters().add(extFilter);
+          // Open the dialog
           File file = fileChooser.showSaveDialog(mainStage);
-          
-          System.out.println(file.getAbsolutePath());
-          
+
           try {
-            exportFarmReport.exportMonthlyReport(file.getAbsolutePath(), yearPlaceholder, monthPlaceholder);
+            // Generate the report
+            exportFarmReport.exportMonthlyReport(file.getAbsolutePath(), yearPlaceholder,
+                monthPlaceholder);
           } catch (IOException e1) {
+            // If writing failed
             generateStatusMessage("Error saving file!");
           }
-          
-        }else if(saveType == 4) {
-          ExportData exportFarmReport = new ExportData(cheeseFactory);
-          
-          FileChooser fileChooser = new FileChooser();
-          
-          //Set extension filter for text files
-          FileChooser.ExtensionFilter extFilter = new FileChooser.ExtensionFilter("TXT files (*.txt)", "*.txt");
-          fileChooser.getExtensionFilters().add(extFilter);
 
-          //Show save file dialog
+        } else if (saveType == 4) { // If saving date range
+          // Create a new exporter object
+          ExportData exportFarmReport = new ExportData(cheeseFactory);
+
+          // Open a new save file chooser
+          FileChooser fileChooser = new FileChooser();
+          // Set file extension
+          FileChooser.ExtensionFilter extFilter =
+              new FileChooser.ExtensionFilter("TXT files (*.txt)", "*.txt");
+          fileChooser.getExtensionFilters().add(extFilter);
+          // Open the dialog
           File file = fileChooser.showSaveDialog(mainStage);
-          
-          System.out.println(file.getAbsolutePath());
-          
+
           try {
-            exportFarmReport.exportDateRangeReport(file.getAbsolutePath(), fromDatePlaceholder, toDatePlaceholder);
+            // Generate the report
+            exportFarmReport.exportDateRangeReport(file.getAbsolutePath(), fromDatePlaceholder,
+                toDatePlaceholder);
           } catch (IOException e1) {
+            // If writing failed
             generateStatusMessage("Error saving file!");
           }
         }
@@ -276,10 +294,13 @@ public class Main extends Application {
     loadSavePanelPane.getChildren().add(loadButton); // Add the buttons to the pane
     loadSavePanelPane.getChildren().add(saveButton);
 
-    loadSavePanelPane.setPadding(new Insets(15, 15, 15, 15));
+    loadSavePanelPane.setPadding(new Insets(15, 15, 15, 15)); // Add padding
     root.setRight(loadSavePanelPane); // Set the right root pane
   }
 
+  /**
+   * Generates the report panel
+   */
   private void generateGetReportPanel() {
     GridPane getReportPanelPane = new GridPane();
 
@@ -307,40 +328,39 @@ public class Main extends Application {
       public void handle(ActionEvent e) {
         // EVENT IF GET FARM REPORT IS CLICKED
         try {
-          if(farmIDText.getText() != null && !farmIDText.getText().isEmpty()
+          // Check if text fields are empty
+          if (farmIDText.getText() != null && !farmIDText.getText().isEmpty()
               && yearText.getText() != null && !yearText.getText().isEmpty()) {
-            
+
+            // Get the fields
             String farmId = farmIDText.getText();
             Integer year = Integer.parseInt(yearText.getText());
-            
+
             try {
-              for(Double per: cheeseFactory.getFarmReport(farmId, year)) {
-                System.out.println(per);
-              }
+              // Generate the report
               generateFarmReportGraph(farmId, cheeseFactory.getFarmReport(farmId, year));
-              
+              // Update the total weight
               totalMilkWeightText = cheeseFactory.getTotalMilkWeightForFarmAndYear(farmId, year);
-              
+              // Regenerate the option pane
               generateOptionPane();
-              
+
+              // Set the placeholders for saving
               farmIdPlaceholder = farmId;
               yearPlaceholder = year;
-              
-              
+
+              // Update status message
               generateStatusMessage("Farm report successfully generated!");
-              
-              //System.out.println();
-            } catch (NoSuchFieldException e1) {
+
+            } catch (NoSuchFieldException e1) { // If the farm is invalid
               generateStatusMessage("Error. Given farm is invalid!");
-            } catch (MissingFormatArgumentException e2) {
+            } catch (MissingFormatArgumentException e2) { // If the farm is incomplete
               generateStatusMessage("Error. Stated farm is incomplete!");
-            } catch(NoSuchElementException e3) {
+            } catch (NoSuchElementException e3) { // If the given year is invalid
               generateStatusMessage("Error. Given year is invalid!");
             }
-            
-            
+
           }
-        }catch(NumberFormatException e2) {
+        } catch (NumberFormatException e2) { // If input is not an integer
           generateStatusMessage("Input must be an integer!");
         }
 
@@ -366,27 +386,39 @@ public class Main extends Application {
       public void handle(ActionEvent e) {
         // EVENT IF GET ANNUAL REPORT IS CLICKED
         try {
-          if(yearAnnualText.getText() != null && !yearAnnualText.getText().isEmpty()) {
+          // Check if the required text fields are empty
+          if (yearAnnualText.getText() != null && !yearAnnualText.getText().isEmpty()) {
+
+            // Get the year
             Integer year = Integer.parseInt(yearAnnualText.getText());
+
             boolean fuse = true;
+
+            // Define the annualReport hashmap object
             HashMap<String, Double> annualReport = null;
             try {
+              // Get the annual report
               annualReport = cheeseFactory.getAnnualReport(year);
+              // Update the total milk weight
               totalMilkWeightText = cheeseFactory.getTotalMilkWeightForAllFarmAndYear(year);
-            }catch(NoSuchElementException e1) {
+            } catch (NoSuchElementException e1) { // If the given year is invalid
               fuse = false;
               generateStatusMessage("Error. Year is invalid!");
             }
-            
-            if(fuse) {
+
+            if (fuse) { // If successful
+              // Update year placeholder for saving
               yearPlaceholder = year;
-              
+
+              // Update the graph
               generateAnnualReportGraph(annualReport);
+              // Update the message
               generateStatusMessage("Annual report successfully generated!");
+              // Update the option pane
               generateOptionPane();
             }
           }
-        }catch(NumberFormatException e2) {
+        } catch (NumberFormatException e2) { // If the given input is not an integer
           generateStatusMessage("Input must be an integer!");
         }
 
@@ -419,41 +451,53 @@ public class Main extends Application {
     EventHandler<ActionEvent> getMonthlyReportEvent = new EventHandler<ActionEvent>() {
       public void handle(ActionEvent e) {
         // EVENT IF GET MONTHLY REPORT IS CLICKED
-        if(yearMonthlyText.getText() != null && !yearMonthlyText.getText().isEmpty() && 
-            monthMonthlyText.getText() != null && !monthMonthlyText.getText().isEmpty()) {
+        // Check if the required fields are not null
+        if (yearMonthlyText.getText() != null && !yearMonthlyText.getText().isEmpty()
+            && monthMonthlyText.getText() != null && !monthMonthlyText.getText().isEmpty()) {
           try {
-            if(Integer.parseInt(monthMonthlyText.getText()) >=1 && Integer.parseInt(monthMonthlyText.getText()) <=12) {
-              
+            // Check the month if valid
+            if (Integer.parseInt(monthMonthlyText.getText()) >= 1
+                && Integer.parseInt(monthMonthlyText.getText()) <= 12) {
+              // Get the year and month
               Integer year = Integer.parseInt(yearMonthlyText.getText());
               Integer month = Integer.parseInt(monthMonthlyText.getText());
-              
+
               boolean fuse = true;
+
+              // Define the monthlyReport hashmap
               HashMap<String, Double> monthlyReport = null;
-              
+
               try {
+                // Get the monthly report
                 monthlyReport = cheeseFactory.getMonthlyReport(year, month);
-                totalMilkWeightText = cheeseFactory.getTotalMilkWeightForAllFarmAndMonth(year, month);
-              }catch(NoSuchElementException e1) {
+                // Update the total milk weight
+                totalMilkWeightText =
+                    cheeseFactory.getTotalMilkWeightForAllFarmAndMonth(year, month);
+              } catch (NoSuchElementException e1) { // If the given year is invalid
                 fuse = false;
                 generateStatusMessage("Error. Year is invalid!");
               }
-              
-              if(fuse) {
+
+              if (fuse) { // If successful
+                // Set placeholders for saving
                 yearPlaceholder = year;
                 monthPlaceholder = month;
 
+                // Generate the graph
                 generateMonthlyReportGraph(monthlyReport);
+                // Generate the status message
                 generateStatusMessage("Monthly report successfully generated!");
+                // Generate the option pane
                 generateOptionPane();
               }
-              
-            }else {
+
+            } else { // If the given month is invalid
               generateStatusMessage("Error. Month given is invalid!");
             }
-          }catch(NumberFormatException e2) {
+          } catch (NumberFormatException e2) { // If the input is not an integer
             generateStatusMessage("Input must be an integer!");
           }
-          
+
         }
 
       }
@@ -485,77 +529,102 @@ public class Main extends Application {
     EventHandler<ActionEvent> getDateReportEvent = new EventHandler<ActionEvent>() {
       public void handle(ActionEvent e) {
         // EVENT IF GET DATE REPORT IS CLICKED
-        if(fromDateText.getText() != null && toDateText.getText() != null) {
+        // Check if the required fields are not empty
+        if (fromDateText.getText() != null && toDateText.getText() != null) {
           boolean fuse = true;
+
+          // Define the dateRangeReport hashmap
           HashMap<String, Double> dateRangeReport = null;
+          // Define the LocalDate objects
           LocalDate parsedFromDate = null;
           LocalDate parsedToDate = null;
           try {
+            // Try parsing the date
             parsedFromDate = parseDate(fromDateText.getText());
             parsedToDate = parseDate(toDateText.getText());
-            
+
             try {
+              // Get the data
               dateRangeReport = cheeseFactory.getDateRangeReport(parsedFromDate, parsedToDate);
-              totalMilkWeightText = cheeseFactory.getTotalMilkWeightForAllFromDateToDate(parsedFromDate, parsedToDate);              
-              
-            }catch(DateTimeException e2) {
+              // Update the total milk weight
+              totalMilkWeightText = cheeseFactory
+                  .getTotalMilkWeightForAllFromDateToDate(parsedFromDate, parsedToDate);
+
+            } catch (DateTimeException e2) { // If the from date is larger than the to date
               fuse = false;
               generateStatusMessage("Error: from date is larger than to date!");
             }
-            
-          }catch(IllegalArgumentException e1) {
+
+          } catch (IllegalArgumentException e1) { // If parsing date failed
             fuse = false;
             generateStatusMessage("Error: " + e1.getMessage());
           }
-          
-          if(fuse) {
+
+          if (fuse) { // If successful
+            // Update placeholders for saving
             fromDatePlaceholder = parsedFromDate;
             toDatePlaceholder = parsedToDate;
-            
+
+            // Generate the graph
             generateDateRangeReportGraph(dateRangeReport);
+            // Update the status message
             generateStatusMessage("Date range report successfully generated!");
+            // Regenerate the option pane
             generateOptionPane();
           }
-          
-          
+
         }
 
       }
     };
 
     getDateReportButton.setOnAction(getDateReportEvent); // Set the action of get date report button
-    
-    getReportPanelPane.setPadding(new Insets(15, 15, 15, 15));
-    
+
+    getReportPanelPane.setPadding(new Insets(15, 15, 15, 15)); // Set the padding
+
     root.setRight(getReportPanelPane);
   }
-  
-  private LocalDate parseDate(String date) throws IllegalArgumentException{
+
+  /**
+   * Helper method to parse dates
+   * 
+   * @param date date in string format (mm/dd/yyy)
+   * @return LocalDate object of the date
+   * @throws IllegalArgumentException if the given date is invalid
+   */
+  private LocalDate parseDate(String date) throws IllegalArgumentException {
+    // Split the date
     String[] dateSplitted = date.split("/");
-    
-    if(dateSplitted.length < 3) {
+
+    // If the date is not as expected
+    if (dateSplitted.length != 3) {
       throw new IllegalArgumentException("Date give is an incorrect format!");
     }
-    
+
+    // Define the parsed date
     LocalDate parsedDate = null;
-    
+
     try {
+      // Parse the month, day, and year
       Integer month = Integer.parseInt(dateSplitted[0]);
       Integer day = Integer.parseInt(dateSplitted[1]);
       Integer year = Integer.parseInt(dateSplitted[2]);
-      
+
+      // Create the localdate object
       parsedDate = LocalDate.of(year, month, day);
-      
-      
-    }catch(NumberFormatException e) {
+
+    } catch (NumberFormatException e) { // If the given date is not a valid integer
       throw new IllegalArgumentException("Date given is not an integer!");
-    }catch(DateTimeException e) {
+    } catch (DateTimeException e) { // If the given date is an invalid date
       throw new IllegalArgumentException("Date given is invalid!");
     }
-    
+
     return parsedDate;
   }
 
+  /**
+   * Generates the title
+   */
   private void generateTitle() {
     // Create the title label
     Label title = new Label("Milk Weight");
@@ -568,49 +637,64 @@ public class Main extends Application {
 
     root.setTop(titleBox);
   }
-  
+
+  /**
+   * Generates the DateRangeReport graph
+   * 
+   * @param dateRangeReport data to be graphed
+   */
   private void generateDateRangeReportGraph(HashMap<String, Double> dateRangeReport) {
-    
-    // defining the axes
-    final CategoryAxis xAxis = new CategoryAxis(); // plot against time
+
+    // Defines the axis
+    final CategoryAxis xAxis = new CategoryAxis(); // plot
     final NumberAxis yAxis = new NumberAxis();
     xAxis.setLabel("Farms");
     xAxis.setAnimated(true); // axis animations are removed
     yAxis.setLabel("Milk Weight Percentage");
     yAxis.setAnimated(true); // axis animations are removed
-    
+
+    // Create a new linechart
     final LineChart<String, Number> lineChart = new LineChart<>(xAxis, yAxis);
-    
+
     lineChart.setAnimated(true);
-    
+
+    // Create a new series set
     XYChart.Series<String, Number> farm = new XYChart.Series<>();
     farm.setName("Farms");
-    
+
+    // Add the series to the graph
     lineChart.getData().add(farm);
-    
+
+    // Get the farms
     Set<String> farmIds = dateRangeReport.keySet();
-    ArrayList<String> farmIdsSorted = new ArrayList<>();
-    
-    for(String farmId: farmIds) {
+    ArrayList<String> farmIdsSorted = new ArrayList<>(); // Sort the farms
+
+    // Add the farms into the sorted array
+    for (String farmId : farmIds) {
       farmIdsSorted.add(farmId);
     }
-    
-    Collections.sort(farmIdsSorted);
-    System.out.println(farmIdsSorted);
-    
-    
-    for(int i = 0; i < farmIdsSorted.size(); i++) {
-      farm.getData().add(new XYChart.Data<>(farmIdsSorted.get(i), dateRangeReport.get(farmIdsSorted.get(i))));
+
+    Collections.sort(farmIdsSorted); // Sort the array
+
+    // Loop through and add the farms and their percentages into the graph
+    for (int i = 0; i < farmIdsSorted.size(); i++) {
+      farm.getData()
+          .add(new XYChart.Data<>(farmIdsSorted.get(i), dateRangeReport.get(farmIdsSorted.get(i))));
     }
-    
+
+    // Set the save type
     saveType = 4;
 
     root.setCenter(lineChart);
-    
+
   }
-  
+
+  /**
+   * Generates a month report graph
+   * 
+   * @param monthlyReport data to be graphed
+   */
   private void generateMonthlyReportGraph(HashMap<String, Double> monthlyReport) {
-    
     // defining the axes
     final CategoryAxis xAxis = new CategoryAxis(); // plot against time
     final NumberAxis yAxis = new NumberAxis();
@@ -618,38 +702,51 @@ public class Main extends Application {
     xAxis.setAnimated(true); // axis animations are removed
     yAxis.setLabel("Milk Weight Percentage");
     yAxis.setAnimated(true); // axis animations are removed
-    
+
+    // Create the new linechart
     final LineChart<String, Number> lineChart = new LineChart<>(xAxis, yAxis);
-    
+
     lineChart.setAnimated(true);
-    
+
+    // Create the series
     XYChart.Series<String, Number> farm = new XYChart.Series<>();
     farm.setName("Farms");
-    
+
+    // Add the series into the chart
     lineChart.getData().add(farm);
-    
+
+    // Set the farm ids
     Set<String> farmIds = monthlyReport.keySet();
+
+    // Sort the farm ids into an arraylist
     ArrayList<String> farmIdsSorted = new ArrayList<>();
-    
-    for(String farmId: farmIds) {
+
+
+    for (String farmId : farmIds) {
       farmIdsSorted.add(farmId);
     }
-    
+
     Collections.sort(farmIdsSorted);
-    
-    
-    for(int i = 0; i < farmIdsSorted.size(); i++) {
-      farm.getData().add(new XYChart.Data<>(farmIdsSorted.get(i), monthlyReport.get(farmIdsSorted.get(i))));
+
+    // Place the data into the graph
+    for (int i = 0; i < farmIdsSorted.size(); i++) {
+      farm.getData()
+          .add(new XYChart.Data<>(farmIdsSorted.get(i), monthlyReport.get(farmIdsSorted.get(i))));
     }
-    
+
+    // Set the save type
     saveType = 3;
 
     root.setCenter(lineChart);
-    
+
   }
-  
+
+  /**
+   * Generate the annual report graph
+   * 
+   * @param annualReport data to be graphed
+   */
   private void generateAnnualReportGraph(HashMap<String, Double> annualReport) {
-    
     // defining the axes
     final CategoryAxis xAxis = new CategoryAxis(); // plot against time
     final NumberAxis yAxis = new NumberAxis();
@@ -657,44 +754,50 @@ public class Main extends Application {
     xAxis.setAnimated(true); // axis animations are removed
     yAxis.setLabel("Milk Weight Percentage");
     yAxis.setAnimated(true); // axis animations are removed
-    
+
+    // Create a new line chart
     final LineChart<String, Number> lineChart = new LineChart<>(xAxis, yAxis);
-    
+
     lineChart.setAnimated(true);
     lineChart.setAxisSortingPolicy(LineChart.SortingPolicy.X_AXIS);
-    
+
+    // Add a new series into the graph
     XYChart.Series<String, Number> farm = new XYChart.Series<>();
     farm.setName("Farms");
-    
+
     lineChart.getData().add(farm);
-    
+
+    // Get the farm ids
     Set<String> farmIds = annualReport.keySet();
+
+    // Sort the farm ids into an arraylist
     ArrayList<String> farmIdsSorted = new ArrayList<>();
-    
-    for(String farmId: farmIds) {
+
+    for (String farmId : farmIds) {
       farmIdsSorted.add(farmId);
     }
-    
-    
+
     Collections.sort(farmIdsSorted);
-    
-    
-    System.out.println(farmIdsSorted);
-    
-    
-    for(int i = 0; i < farmIdsSorted.size(); i++) {
-      System.out.println(farmIdsSorted.get(i));
-      farm.getData().add(new XYChart.Data<>(farmIdsSorted.get(i), annualReport.get(farmIdsSorted.get(i))));
+
+    // Put the data into the graph
+    for (int i = 0; i < farmIdsSorted.size(); i++) {
+      farm.getData()
+          .add(new XYChart.Data<>(farmIdsSorted.get(i), annualReport.get(farmIdsSorted.get(i))));
     }
-    
+
+    // Set the save type
     saveType = 2;
-    
+
     root.setCenter(lineChart);
-    
   }
-  
+
+  /**
+   * Generate the farm report graph
+   * 
+   * @param farmId      farm id to graph
+   * @param percentages percentages to graph
+   */
   private void generateFarmReportGraph(String farmId, ArrayList<Double> percentages) {
-    
     // defining the axes
     final CategoryAxis xAxis = new CategoryAxis(); // plot against time
     final NumberAxis yAxis = new NumberAxis();
@@ -703,9 +806,9 @@ public class Main extends Application {
     yAxis.setLabel("Milk Weight");
     yAxis.setAnimated(true); // axis animations are removed
 
-    // creating the line chart with two axis created above
+    // Creating the line chart with two axis created above
     final LineChart<String, Number> lineChart = new LineChart<>(xAxis, yAxis);
-    
+
     lineChart.setAxisSortingPolicy(LineChart.SortingPolicy.X_AXIS);
 
     lineChart.setAnimated(true); // disable animations
@@ -713,18 +816,23 @@ public class Main extends Application {
     XYChart.Series<String, Number> farm = new XYChart.Series<>();
     farm.setName(farmId);
 
-    // add series to chart
+    // Add series to chart
     lineChart.getData().add(farm);
 
-    for(int i = 0; i < 12; i++) {
-      farm.getData().add(new XYChart.Data<>(Integer.toString(i+1), percentages.get(i)));
+    // Put the data into the graph
+    for (int i = 0; i < 12; i++) {
+      farm.getData().add(new XYChart.Data<>(Integer.toString(i + 1), percentages.get(i)));
     }
-    
+
+    // Set the save type
     saveType = 1;
-   
+
     root.setCenter(lineChart);
   }
 
+  /**
+   * Generate a default graph
+   */
   private void generateGraph() {
     // defining the axes
     final CategoryAxis xAxis = new CategoryAxis(); // plot against time
@@ -741,26 +849,37 @@ public class Main extends Application {
 
     root.setCenter(lineChart);
   }
-  
+
+  /**
+   * Generate the status message
+   * 
+   * @param msg status message
+   */
   private void generateStatusMessage(String msg) {
     GridPane statusMsgBox = new GridPane();
-    
+
+    // Create the label
     Label statusText = new Label("Status: " + msg);
     statusText.setFont(Font.font("Comic Sans MS", 20));
     statusText.setPadding(new Insets(15, 15, 15, 15));
-    
+
+    // Add the label into the pane
     statusMsgBox.getChildren().add(statusText);
-    
+
     root.setBottom(statusMsgBox);
-    
+
   }
-  
+
+  /**
+   * Generate the option pane
+   */
   private void generateOptionPane() {
     TilePane leftPane = new TilePane(Orientation.VERTICAL);
-    
+
+    // Create the combobox
     String[] options = {"Load/Save Data", "Get Report"};
     ComboBox<String> comboBox = new ComboBox<String>(FXCollections.observableArrayList(options));
-    
+
     // Create a listener for the combobox
     comboBox.valueProperty().addListener(new ChangeListener<String>() {
       @Override
@@ -776,36 +895,42 @@ public class Main extends Application {
         }
       }
     });
-    
+
     leftPane.getChildren().add(comboBox);
-    totalMilkWeightText = this.totalMilkWeightText;
-    
+
+    // Create the milk label
     Label totalMilkLabel = new Label("Total milk weight: " + totalMilkWeightText + " lbs");
     leftPane.getChildren().add(totalMilkLabel);
-    
+
+    // Set padding
     leftPane.setPadding(new Insets(15, 15, 15, 15));
-    
+
     root.setLeft(leftPane); // Place the combobox button to the left borderpane
-    
-    
+
+
   }
 
+  /**
+   * Start method when application is launched
+   * 
+   * Stage arg0 main stage
+   */
   @Override
   public void start(Stage arg0) throws Exception {
-    
+    // Set the main stage
     mainStage = arg0;
-    
+
+    // Create root
     this.root = new BorderPane();
-    
+
+    // Create new FarmGroup
     this.cheeseFactory = new FarmGroup();
 
+    // Generate panes
     generateOptionPane();
-    
     generateStatusMessage("Please load the milk weight data!");
-
     generateTitle(); // Generate the title
-
-    generateGraph(); // Generate graph
+    generateGraph(); // Generate default graph
 
     // Create the main scene
     Scene mainScene = new Scene(root, WINDOW_WIDTH, WINDOW_HEIGHT);
@@ -815,6 +940,11 @@ public class Main extends Application {
     arg0.show(); // Show the scene
   }
 
+  /**
+   * Main driver of the class
+   * 
+   * @param args input params
+   */
   public static void main(String[] args) {
     launch(args);
   }
