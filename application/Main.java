@@ -31,6 +31,7 @@ import java.time.DateTimeException;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.IllegalFormatConversionException;
 import java.util.List;
@@ -63,6 +64,7 @@ import javafx.scene.layout.StackPane;
 import javafx.scene.text.Font;
 import javafx.scene.text.TextAlignment;
 import javafx.stage.DirectoryChooser;
+import javafx.stage.Popup;
 import javafx.stage.Stage;
 
 // TEST COMMENT
@@ -86,69 +88,14 @@ public class Main extends Application {
   
   private int totalMilkWeightText = 0;
 
-  private void generateLoadPanel() {
-    GridPane loadPanelPane = new GridPane();
+  private void generateLoadSavePanel() {
+    TilePane loadSavePanelPane = new TilePane(); // Create the load panel pane
 
-    // INPUT MANUAL FORM
-    // Create an input manual label
-    Label inputManualLabel = new Label("Input manually");
-    GridPane.setConstraints(inputManualLabel, 0, 0);
-    loadPanelPane.getChildren().add(inputManualLabel);
+    Button loadButton = new Button("Browse A Farm Directory Data"); // Create a load data button
+    Button saveButton = new Button("Save to file"); // Create a save data button
 
-    // Create enter milk weight textbox
-    final TextField milkWeight = new TextField();
-    milkWeight.setPromptText("Enter milk weight");
-    GridPane.setConstraints(milkWeight, 0, 1);
-    loadPanelPane.getChildren().add(milkWeight);
-
-    // Create enter farm name textbox
-    final TextField farmName = new TextField();
-    farmName.setPrefColumnCount(15);
-    farmName.setPromptText("Enter farm name");
-    GridPane.setConstraints(farmName, 0, 3);
-    loadPanelPane.getChildren().add(farmName);
-
-    // Create date textbox
-    final TextField date = new TextField();
-    date.setPrefColumnCount(15);
-    date.setPromptText("mm/dd/yyy");
-    GridPane.setConstraints(date, 0, 4);
-    loadPanelPane.getChildren().add(date);
-
-    // Create a submit button
-    Button submit = new Button("Enter");
-    GridPane.setConstraints(submit, 0, 5);
-
-    EventHandler<ActionEvent> enterData = new EventHandler<ActionEvent>() {
-      public void handle(ActionEvent e) {
-        // HANDLE MANUAL DATA SUBMIT
-        /*
-         * Label outputLabel = new Label(); Label dataLabel = new Label();
-         * GridPane.setConstraints(outputLabel, 0, 10); GridPane.setConstraints(dataLabel, 0, 11);
-         * grid.getChildren().add(outputLabel); grid.getChildren().add(dataLabel);
-         * 
-         * if (milkWeight.getText() != null && !milkWeight.getText().isEmpty()) {
-         * dataLabel.setText("data entered: " + milkWeight.getText()); if (farmName.getText() !=
-         * null && !farmName.getText().isEmpty()) { outputLabel.setText("farm entered: " +
-         * farmName.getText()); } else { outputLabel.setText("data is invalid"); } } else {
-         * dataLabel.setText("invalid"); }
-         */
-      }
-    };
-
-    submit.setOnAction(enterData); // Set the event handler for submit button
-
-    // Create a file browse button label
-    Label browseFromFileLabel = new Label("Browse from file");
-    GridPane.setConstraints(browseFromFileLabel, 0, 6);
-    loadPanelPane.getChildren().add(browseFromFileLabel);
-
-    // Create a file browse button
-    Button openFile = new Button("Browse File");
-    loadPanelPane.getChildren().add(openFile);
-    GridPane.setConstraints(openFile, 0, 7);
-    
-    EventHandler<ActionEvent> browseFileEvent = new EventHandler<ActionEvent>() {
+    // Construct an EventHandler for load data
+    EventHandler<ActionEvent> loadEvent = new EventHandler<ActionEvent>() {
       public void handle(ActionEvent e) {
         
         DirectoryChooser chooseCSVDirectory = new DirectoryChooser();
@@ -158,6 +105,7 @@ public class Main extends Application {
         try {
           if(selectedDirectory != null) {
             //System.out.println(selectedDirectory.getAbsolutePath());
+            System.out.println("TEST");
             cheeseFactory = new FarmGroup();
             
             String pathToDir = selectedDirectory.getAbsolutePath();
@@ -225,24 +173,6 @@ public class Main extends Application {
       }
     };
 
-    openFile.setOnAction(browseFileEvent); // Set the event handler for browse button
-
-    root.setRight(loadPanelPane);
-  }
-
-  private void generateLoadSavePanel() {
-    TilePane loadSavePanelPane = new TilePane(); // Create the load panel pane
-
-    Button loadButton = new Button("Load Data"); // Create a load data button
-    Button saveButton = new Button("Save to file"); // Create a save data button
-
-    // Construct an EventHandler for load data
-    EventHandler<ActionEvent> loadEvent = new EventHandler<ActionEvent>() {
-      public void handle(ActionEvent e) {
-        generateLoadPanel(); // Generate the load panel
-      }
-    };
-
     loadButton.setOnAction(loadEvent); // Set the action of load button
 
     // Construct an EventHandler for save data
@@ -260,66 +190,6 @@ public class Main extends Application {
     loadSavePanelPane.getChildren().add(saveButton);
 
     root.setRight(loadSavePanelPane); // Set the right root pane
-  }
-
-  public void generateFilterDataPanel() {
-    GridPane filterDataPanelPane = new GridPane();
-
-    // Create an only show farms label
-    Label onlyShowLabel = new Label("Only show farms:");
-    GridPane.setConstraints(onlyShowLabel, 0, 0);
-    filterDataPanelPane.getChildren().add(onlyShowLabel);
-
-    // Create a from farm text field
-    final TextField fromFarm = new TextField();
-    fromFarm.setPrefColumnCount(15);
-    fromFarm.setPromptText("From");
-    GridPane.setConstraints(fromFarm, 0, 1);
-    filterDataPanelPane.getChildren().add(fromFarm);
-
-    // Create a to farm text field
-    final TextField toFarm = new TextField();
-    toFarm.setPrefColumnCount(15);
-    toFarm.setPromptText("From");
-    GridPane.setConstraints(toFarm, 1, 1);
-    filterDataPanelPane.getChildren().add(toFarm);
-
-    // Create a only show date label
-    Label onlyShowDateLabel = new Label("Only show dates:");
-    GridPane.setConstraints(onlyShowDateLabel, 0, 2);
-    filterDataPanelPane.getChildren().add(onlyShowDateLabel);
-
-    // Create a from date text field
-    final TextField fromDate = new TextField();
-    fromDate.setPrefColumnCount(15);
-    fromDate.setPromptText("mm/dd/yyy");
-    GridPane.setConstraints(fromDate, 0, 3);
-    filterDataPanelPane.getChildren().add(fromDate);
-
-    // Create a to date text field
-    final TextField toDate = new TextField();
-    toDate.setPrefColumnCount(15);
-    toDate.setPromptText("From");
-    GridPane.setConstraints(toDate, 1, 3);
-    filterDataPanelPane.getChildren().add(toDate);
-
-    // Create a filter button
-    Button filterButton = new Button("Filter");
-    GridPane.setConstraints(filterButton, 0, 4);
-    filterDataPanelPane.getChildren().add(filterButton);
-
-    // Construct an EventHandler to filter data
-    EventHandler<ActionEvent> filterEvent = new EventHandler<ActionEvent>() {
-      public void handle(ActionEvent e) {
-        // EVENT IF FILTER DATA IS CLICKED
-
-
-      }
-    };
-
-    filterButton.setOnAction(filterEvent); // Set the action of filter button
-
-    root.setRight(filterDataPanelPane);
   }
 
   private void generateGetReportPanel() {
@@ -417,6 +287,32 @@ public class Main extends Application {
             }
             
             if(fuse) {
+              System.out.println("FUSE");
+              boolean check = true;
+              ArrayList<String> incomplete = new ArrayList<>();
+              for(String farmId: annualReport.keySet()) {
+                System.out.println(farmId + ": " + annualReport.get(farmId));
+                if(annualReport.get(farmId).equals(-1.0)) {
+                  check = false;
+                  incomplete.add(farmId);
+                }
+              }
+              
+              if(!check) {
+                System.out.println("INCOMPLETE FOUND");
+                Popup warningPopup = new Popup();
+                Label warning = new Label("Warning: The following farms has incomplete data! Data must be 12 months long.");
+                warningPopup.getContent().add(warning); 
+                
+                Label farmsIncomplete = new Label(incomplete.toString());
+                
+                if (!warningPopup.isShowing()) 
+                  warningPopup.show(mainStage); 
+                else
+                  warningPopup.hide(); 
+                
+              }
+              
               generateAnnualReportGraph(annualReport);
               generateStatusMessage("Annual report successfully generated!");
               generateOptionPane();
@@ -475,6 +371,31 @@ public class Main extends Application {
               }
               
               if(fuse) {
+                boolean check = true;
+                ArrayList<String> incomplete = new ArrayList<>();
+                for(String farmId: monthlyReport.keySet()) {
+                  System.out.println(farmId + ": " + monthlyReport.get(farmId));
+                  if(monthlyReport.get(farmId).equals(-1.0)) {
+                    check = false;
+                    incomplete.add(farmId);
+                  }
+                }
+                
+                if(!check) {
+                  System.out.println("INCOMPLETE FOUND");
+                  Popup warningPopup = new Popup();
+                  Label warning = new Label("Warning: The following farms has incomplete data! Data must be 12 months long.");
+                  warningPopup.getContent().add(warning); 
+                  
+                  Label farmsIncomplete = new Label(incomplete.toString());
+                  
+                  if (!warningPopup.isShowing()) 
+                    warningPopup.show(mainStage); 
+                  else
+                    warningPopup.hide(); 
+                  
+                }
+                
                 generateMonthlyReportGraph(monthlyReport);
                 generateStatusMessage("Monthly report successfully generated!");
                 generateOptionPane();
@@ -540,7 +461,32 @@ public class Main extends Application {
           }
           
           if(fuse) {
-            generateMonthlyReportGraph(dateRangeReport);
+            boolean check = true;
+            ArrayList<String> incomplete = new ArrayList<>();
+            for(String farmId: dateRangeReport.keySet()) {
+              System.out.println(farmId + ": " + dateRangeReport.get(farmId));
+              if(dateRangeReport.get(farmId).equals(-1.0)) {
+                check = false;
+                incomplete.add(farmId);
+              }
+            }
+            
+            if(!check) {
+              System.out.println("INCOMPLETE FOUND");
+              Popup warningPopup = new Popup();
+              Label warning = new Label("Warning: The following farms has incomplete data! Data must be 12 months long.");
+              warningPopup.getContent().add(warning); 
+              
+              Label farmsIncomplete = new Label(incomplete.toString());
+              
+              if (!warningPopup.isShowing()) 
+                warningPopup.show(mainStage); 
+              else
+                warningPopup.hide(); 
+              
+            }
+            
+            generateDateRangeReportGraph(dateRangeReport);
             generateStatusMessage("Date range report successfully generated!");
             generateOptionPane();
           }
@@ -622,6 +568,7 @@ public class Main extends Application {
     }
     
     Collections.sort(farmIdsSorted);
+    System.out.println(farmIdsSorted);
     
     
     for(int i = 0; i < farmIdsSorted.size(); i++) {
@@ -682,6 +629,7 @@ public class Main extends Application {
     final LineChart<String, Number> lineChart = new LineChart<>(xAxis, yAxis);
     
     lineChart.setAnimated(true);
+    lineChart.setAxisSortingPolicy(LineChart.SortingPolicy.X_AXIS);
     
     XYChart.Series<String, Number> farm = new XYChart.Series<>();
     farm.setName("Farms");
@@ -695,10 +643,15 @@ public class Main extends Application {
       farmIdsSorted.add(farmId);
     }
     
+    
     Collections.sort(farmIdsSorted);
     
     
+    System.out.println(farmIdsSorted);
+    
+    
     for(int i = 0; i < farmIdsSorted.size(); i++) {
+      System.out.println(farmIdsSorted.get(i));
       farm.getData().add(new XYChart.Data<>(farmIdsSorted.get(i), annualReport.get(farmIdsSorted.get(i))));
     }
 
@@ -718,6 +671,8 @@ public class Main extends Application {
 
     // creating the line chart with two axis created above
     final LineChart<String, Number> lineChart = new LineChart<>(xAxis, yAxis);
+    
+    lineChart.setAxisSortingPolicy(LineChart.SortingPolicy.X_AXIS);
 
     lineChart.setAnimated(true); // disable animations
 
@@ -794,7 +749,7 @@ public class Main extends Application {
   private void generateOptionPane() {
     TilePane leftPane = new TilePane(Orientation.VERTICAL);
     
-    String[] options = {"Load/Save Data", "Filter Data", "Get Report"};
+    String[] options = {"Load/Save Data", "Get Report"};
     ComboBox<String> comboBox = new ComboBox<String>(FXCollections.observableArrayList(options));
     
     // Create a listener for the combobox
@@ -807,9 +762,6 @@ public class Main extends Application {
 
         } else if (arg.getValue() == options[1]) { // If filter Data
           // Generate the filter data panel
-          generateFilterDataPanel();
-
-        } else if (arg.getValue() == options[2]) { // If get report
           generateGetReportPanel();
 
         }
