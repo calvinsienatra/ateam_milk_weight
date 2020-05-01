@@ -1,20 +1,14 @@
 /**
- * 
+ * Date: 4/30/2020
  */
 package application;
 import java.io.BufferedReader;
-import java.io.BufferedWriter;
-import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
-import java.io.FileWriter;
 import java.io.IOException;
-import java.util.Arrays;
 import java.util.HashMap;
-
-
 /**
- * Main Parser for application
+ * Main Parser for Milk Weight Application 
  * 
  * @author ajshe
  *
@@ -71,34 +65,11 @@ public class InputParser {
     }
   }
   
-  public void saveFile(String path) {
-    try {
-      File myFile = new File(path);
-      if (myFile.createNewFile()) {
-        System.out.println("Created file " + myFile.getName());
-      }
-      else {
-        System.out.println("File exists");
-      }
-      
-      FileWriter writer = new FileWriter(path);
-      BufferedWriter bwr = new BufferedWriter(writer);
-      
-      bwr.write(printData().toString());
-      
-      bwr.flush();
-      
-      bwr.close();
-      
-    }
-    catch (Exception e) {
-      e.printStackTrace();
-    }
-  }
-
   /**
+   * utility function to 
    * print data from data hashMap
-   * @return 
+   * 
+   * @return StringBuffer of data
    */
   public StringBuffer printData() {
     StringBuffer dataString = new StringBuffer();
@@ -119,29 +90,13 @@ public class InputParser {
 
   }
   
+  /**
+   * getter for data
+   * 
+   * @return - data
+   */
   public DataMap<String, String, Integer> getData(){
     return data;
   }
 
-  /**
-   * @param args
-   * @throws IOException
-   */
-  public static void main(String[] args) throws IOException {
-
-//    InputParser parser = new InputParser();
-//    
-//    // edit file path to run on your machine
-//    parser.inputData(
-//        "C:\\Users\\ajshe\\OneDrive\\Documents\\cs400\\ateam_milk_weight\\milk\\small\\2019-1.csv");
-//    System.out.println(parser.data.keySet());
-//    System.out.println(parser.data.getV("Farm 2"));
-//    parser.printData();
-//    
-//    FarmYear farmYear = new FarmYear(parser.data);
-//    farmYear.inputData();
-//    System.out.println(farmYear.getData());
-//    farmYear.printData();
-  }
-
-}
+} // end InputParser class
