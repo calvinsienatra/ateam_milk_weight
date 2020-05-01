@@ -1,9 +1,9 @@
 //////////////////// ALL ASSIGNMENTS INCLUDE THIS SECTION /////////////////////
 //
 // Title: a2
-// Files: Main.java, MilkWeight.java, DataMap.java, InputParser.java, FarmMonth.java, FarmYear.java,
-// Farm.java, FarmGroup.java, ExportData.java
-//
+// Files: Main.java, DataMap.java, ExportData.java, Farm.java, FarmGroup.java,
+// FarmMonth.java, FarmYear.java, InputParser.java, MilkWeight.java,
+// Months.java
 // Course: CS 400, Spring, 2020
 //
 // Author: Adam Shedivy, Calvin Sienatra, Charlie Mrkvicka
@@ -32,7 +32,7 @@ import java.util.HashMap;
  * FarmMonth Class creates an instance of specific month on a farm and contains the milkweights from
  * each day in a hashmap
  * 
- * @author Charlie
+ * @author aTeam 131
  *
  */
 public class FarmMonth implements MilkWeight<Integer, Integer> {
@@ -55,7 +55,7 @@ public class FarmMonth implements MilkWeight<Integer, Integer> {
   /**
    * Insert Milk Weight on certain day in month
    * 
-   * @param dateToSet- Date to insert on
+   * @param dateToSet-  Date to insert on
    * @param milkWeight- Milk weight of the date
    */
   @Override

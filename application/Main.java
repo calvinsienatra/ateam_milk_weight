@@ -794,7 +794,7 @@ public class Main extends Application {
   /**
    * Generate the farm report graph
    * 
-   * @param farmId      farm id to graph
+   * @param farmId farm id to graph
    * @param percentages percentages to graph
    */
   private void generateFarmReportGraph(String farmId, ArrayList<Double> percentages) {

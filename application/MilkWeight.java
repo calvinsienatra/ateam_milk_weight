@@ -1,9 +1,9 @@
 //////////////////// ALL ASSIGNMENTS INCLUDE THIS SECTION /////////////////////
 //
 // Title: a2
-// Files: Main.java, MilkWeight.java, DataMap.java, InputParser.java, FarmMonth.java, FarmYear.java,
-// Farm.java, FarmGroup.java, ExportData.java
-//
+// Files: Main.java, DataMap.java, ExportData.java, Farm.java, FarmGroup.java,
+// FarmMonth.java, FarmYear.java, InputParser.java, MilkWeight.java,
+// Months.java
 // Course: CS 400, Spring, 2020
 //
 // Author: Adam Shedivy, Calvin Sienatra, Charlie Mrkvicka
@@ -25,14 +25,18 @@
 
 
 /**
+ * Defines an interface for MilkWeight
  * 
+ * @author aTeam 131
  */
 package application;
 
 import java.time.LocalDate;
 
 /**
- * @author Charlie
+ * Interface for MilkWeight
+ * 
+ * @author aTeam 131
  *
  */
 public interface MilkWeight<T, U> {
