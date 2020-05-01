@@ -83,7 +83,11 @@ public class ExportData {
       bw.newLine();
       bw.write("---Year: " + year);
       bw.newLine();
+<<<<<<< HEAD
       bw.write("***Total Milk Weights: " + totalMilkWeight);
+=======
+      bw.write("---Total Milk Weight: " + farm.getTotalMilkWeightForFarmAndYear(farmID, year) + " lbs");
+>>>>>>> 1d943e13511262d07537f8cb8615b59163d0a418
       bw.newLine();
 
       for (int i = 0; i < 12; i++) {
@@ -129,7 +133,11 @@ public class ExportData {
       bw.newLine();
       bw.write("---Year: " + year);
       bw.newLine();
+<<<<<<< HEAD
       bw.write("***Total Milk Weights: " + totalMilkWeight);
+=======
+      bw.write("---Total Milk Weight: " + farm.getTotalMilkWeightForAllFarmAndYear(year) + " lbs");
+>>>>>>> 1d943e13511262d07537f8cb8615b59163d0a418
       bw.newLine();
 
       for (String farmIDString : farmIDs) {
@@ -181,8 +189,13 @@ public class ExportData {
       bw.write("---From Date: " + fromDate);
       bw.newLine();
       bw.write("---To Date: " + toDate);
+<<<<<<< HEAD
       bw.write("***Total Milk Weights: " + totalMilkWeight);
       bw.newLine();
+=======
+      bw.newLine();
+      bw.write("---Total Milk Weight: " + farm.getTotalMilkWeightForAllFromDateToDate(fromDate, toDate) + " lbs");
+>>>>>>> 1d943e13511262d07537f8cb8615b59163d0a418
 
       for (String farmIDString : farmIDs) {
         bw.newLine();
@@ -222,8 +235,13 @@ public class ExportData {
       bw.write("---Year: " + year);
       bw.newLine();
       bw.write("---Month: " + generateMonth(month));
+<<<<<<< HEAD
       bw.write("***Total Milk Weights: " + totalMilkWeight);
       bw.newLine();
+=======
+      bw.newLine();
+      bw.write("---Total Milk Weight: " + farm.getTotalMilkWeightForAllFarmAndMonth(year, month) + " lbs");
+>>>>>>> 1d943e13511262d07537f8cb8615b59163d0a418
 
       for (String farmIDString : farmIDs) {
         bw.newLine();

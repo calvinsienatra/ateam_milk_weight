@@ -31,9 +31,7 @@ import java.time.DateTimeException;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.HashMap;
-import java.util.IllegalFormatConversionException;
 import java.util.List;
 import java.util.MissingFormatArgumentException;
 import java.util.NoSuchElementException;
@@ -54,7 +52,6 @@ import javafx.scene.control.TextField;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.TilePane;
-import javafx.scene.layout.VBox;
 import javafx.geometry.Pos;
 import javafx.scene.chart.CategoryAxis;
 import javafx.scene.chart.LineChart;
@@ -65,7 +62,6 @@ import javafx.scene.text.Font;
 import javafx.scene.text.TextAlignment;
 import javafx.stage.DirectoryChooser;
 import javafx.stage.FileChooser;
-import javafx.stage.Popup;
 import javafx.stage.Stage;
 
 // TEST COMMENT
@@ -734,42 +730,14 @@ public class Main extends Application {
     final CategoryAxis xAxis = new CategoryAxis(); // plot against time
     final NumberAxis yAxis = new NumberAxis();
     xAxis.setLabel("Month");
-    xAxis.setAnimated(false); // axis animations are removed
+    xAxis.setAnimated(true); // axis animations are removed
     yAxis.setLabel("Milk Weight");
-    yAxis.setAnimated(false); // axis animations are removed
+    yAxis.setAnimated(true); // axis animations are removed
 
     // creating the line chart with two axis created above
     final LineChart<String, Number> lineChart = new LineChart<>(xAxis, yAxis);
 
-    lineChart.setAnimated(false); // disable animations
-
-    XYChart.Series<String, Number> farm1 = new XYChart.Series<>();
-    farm1.setName("Farm 1");
-
-    XYChart.Series<String, Number> farm2 = new XYChart.Series<>();
-    farm2.setName("Farm 2");
-
-    // add series to chart
-    lineChart.getData().add(farm1);
-    lineChart.getData().add(farm2);
-
-    farm1.getData().add(new XYChart.Data<>("1", 2));
-    farm1.getData().add(new XYChart.Data<>("2", 10));
-    farm1.getData().add(new XYChart.Data<>("3", 1));
-
-    farm2.getData().add(new XYChart.Data<>("1", 1));
-    farm2.getData().add(new XYChart.Data<>("2", 5));
-    farm2.getData().add(new XYChart.Data<>("3", 9));
-    farm2.getData().add(new XYChart.Data<>("4", 1));
-    farm2.getData().add(new XYChart.Data<>("5", 5));
-    farm2.getData().add(new XYChart.Data<>("6", 9));
-    farm2.getData().add(new XYChart.Data<>("7", 1));
-    farm2.getData().add(new XYChart.Data<>("8", 5));
-    farm2.getData().add(new XYChart.Data<>("9", 9));
-    farm2.getData().add(new XYChart.Data<>("10", 1));
-    farm2.getData().add(new XYChart.Data<>("11", 5));
-    farm2.getData().add(new XYChart.Data<>("12", 9));
-
+    lineChart.setAnimated(true); // disable animations
 
     root.setCenter(lineChart);
   }
