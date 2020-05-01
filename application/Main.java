@@ -27,10 +27,15 @@ package application;
 
 import java.io.File;
 import java.io.IOException;
+import java.time.DateTimeException;
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.IllegalFormatConversionException;
 import java.util.List;
 import java.util.MissingFormatArgumentException;
+import java.util.NoSuchElementException;
 import java.util.Set;
 import javafx.application.Application;
 import javafx.beans.value.ChangeListener;
@@ -153,6 +158,8 @@ public class Main extends Application {
         try {
           if(selectedDirectory != null) {
             //System.out.println(selectedDirectory.getAbsolutePath());
+            cheeseFactory = new FarmGroup();
+            
             String pathToDir = selectedDirectory.getAbsolutePath();
             
             File[] listOfCSV = selectedDirectory.listFiles();
@@ -341,33 +348,38 @@ public class Main extends Application {
     EventHandler<ActionEvent> getFarmReportEvent = new EventHandler<ActionEvent>() {
       public void handle(ActionEvent e) {
         // EVENT IF GET FARM REPORT IS CLICKED
-        if(farmIDText.getText() != null && !farmIDText.getText().isEmpty()
-            && yearText.getText() != null && !yearText.getText().isEmpty()) {
-          
-          String farmId = farmIDText.getText();
-          Integer year = Integer.parseInt(yearText.getText());
-          
-          try {
-            for(Double per: cheeseFactory.getFarmReport(farmId, year)) {
-              System.out.println(per);
+        try {
+          if(farmIDText.getText() != null && !farmIDText.getText().isEmpty()
+              && yearText.getText() != null && !yearText.getText().isEmpty()) {
+            
+            String farmId = farmIDText.getText();
+            Integer year = Integer.parseInt(yearText.getText());
+            
+            try {
+              for(Double per: cheeseFactory.getFarmReport(farmId, year)) {
+                System.out.println(per);
+              }
+              generateFarmReportGraph(farmId, cheeseFactory.getFarmReport(farmId, year));
+              
+              totalMilkWeightText = cheeseFactory.getTotalMilkWeightForFarmAndYear(farmId, year);
+              
+              generateOptionPane();
+              
+              generateStatusMessage("Farm report successfully generated!");
+              
+              //System.out.println();
+            } catch (NoSuchFieldException e1) {
+              generateStatusMessage("Error. Given farm is invalid!");
+            } catch (MissingFormatArgumentException e2) {
+              generateStatusMessage("Error. Stated farm is incomplete!");
+            } catch(NoSuchElementException e3) {
+              generateStatusMessage("Error. Given year is invalid!");
             }
-            generateFarmReportGraph(farmId, cheeseFactory.getFarmReport(farmId, year));
             
-            totalMilkWeightText = cheeseFactory.getTotalMilkWeightForFarmAndYear(farmId, year);
             
-            generateOptionPane();
-            
-            generateStatusMessage("Farm report successfully generated!");
-            
-            //System.out.println();
-          } catch (NoSuchFieldException e1) {
-            generateStatusMessage("Error. Given farm is invalid!");
-            e1.printStackTrace();
-          } catch (MissingFormatArgumentException e2) {
-            generateStatusMessage("Error. Stated farm is incomplete!");
           }
-          
-          
+        }catch(NumberFormatException e2) {
+          generateStatusMessage("Input must be an integer!");
         }
 
       }
@@ -391,7 +403,28 @@ public class Main extends Application {
     EventHandler<ActionEvent> getAnnualReportEvent = new EventHandler<ActionEvent>() {
       public void handle(ActionEvent e) {
         // EVENT IF GET ANNUAL REPORT IS CLICKED
-
+        try {
+          if(yearAnnualText.getText() != null && !yearAnnualText.getText().isEmpty()) {
+            Integer year = Integer.parseInt(yearAnnualText.getText());
+            boolean fuse = true;
+            HashMap<String, Double> annualReport = null;
+            try {
+              annualReport = cheeseFactory.getAnnualReport(year);
+              totalMilkWeightText = cheeseFactory.getTotalMilkWeightForAllFarmAndYear(year);
+            }catch(NoSuchElementException e1) {
+              fuse = false;
+              generateStatusMessage("Error. Year is invalid!");
+            }
+            
+            if(fuse) {
+              generateAnnualReportGraph(annualReport);
+              generateStatusMessage("Annual report successfully generated!");
+              generateOptionPane();
+            }
+          }
+        }catch(NumberFormatException e2) {
+          generateStatusMessage("Input must be an integer!");
+        }
 
       }
     };
@@ -422,7 +455,39 @@ public class Main extends Application {
     EventHandler<ActionEvent> getMonthlyReportEvent = new EventHandler<ActionEvent>() {
       public void handle(ActionEvent e) {
         // EVENT IF GET MONTHLY REPORT IS CLICKED
-
+        if(yearMonthlyText.getText() != null && !yearMonthlyText.getText().isEmpty() && 
+            monthMonthlyText.getText() != null && !monthMonthlyText.getText().isEmpty()) {
+          try {
+            if(Integer.parseInt(monthMonthlyText.getText()) >=1 && Integer.parseInt(monthMonthlyText.getText()) <=12) {
+              
+              Integer year = Integer.parseInt(yearMonthlyText.getText());
+              Integer month = Integer.parseInt(monthMonthlyText.getText());
+              
+              boolean fuse = true;
+              HashMap<String, Double> monthlyReport = null;
+              
+              try {
+                monthlyReport = cheeseFactory.getMonthlyReport(year, month);
+                totalMilkWeightText = cheeseFactory.getTotalMilkWeightForAllFarmAndMonth(year, month);
+              }catch(NoSuchElementException e1) {
+                fuse = false;
+                generateStatusMessage("Error. Year is invalid!");
+              }
+              
+              if(fuse) {
+                generateMonthlyReportGraph(monthlyReport);
+                generateStatusMessage("Monthly report successfully generated!");
+                generateOptionPane();
+              }
+              
+            }else {
+              generateStatusMessage("Error. Month given is invalid!");
+            }
+          }catch(NumberFormatException e2) {
+            generateStatusMessage("Input must be an integer!");
+          }
+          
+        }
 
       }
     };
@@ -453,7 +518,35 @@ public class Main extends Application {
     EventHandler<ActionEvent> getDateReportEvent = new EventHandler<ActionEvent>() {
       public void handle(ActionEvent e) {
         // EVENT IF GET DATE REPORT IS CLICKED
-
+        if(fromDateText.getText() != null && toDateText.getText() != null) {
+          boolean fuse = true;
+          HashMap<String, Double> dateRangeReport = null;
+          try {
+            LocalDate parsedFromDate = parseDate(fromDateText.getText());
+            LocalDate parsedToDate = parseDate(toDateText.getText());
+            
+            try {
+              dateRangeReport = cheeseFactory.getDateRangeReport(parsedFromDate, parsedToDate);
+              totalMilkWeightText = cheeseFactory.getTotalMilkWeightForAllFromDateToDate(parsedFromDate, parsedToDate);              
+              
+            }catch(DateTimeException e2) {
+              fuse = false;
+              generateStatusMessage("Error: from date is larger than to date!");
+            }
+            
+          }catch(IllegalArgumentException e1) {
+            fuse = false;
+            generateStatusMessage("Error: " + e1.getMessage());
+          }
+          
+          if(fuse) {
+            generateMonthlyReportGraph(dateRangeReport);
+            generateStatusMessage("Date range report successfully generated!");
+            generateOptionPane();
+          }
+          
+          
+        }
 
       }
     };
@@ -461,6 +554,32 @@ public class Main extends Application {
     getDateReportButton.setOnAction(getDateReportEvent); // Set the action of get date report button
 
     root.setRight(getReportPanelPane);
+  }
+  
+  private LocalDate parseDate(String date) throws IllegalArgumentException{
+    String[] dateSplitted = date.split("/");
+    
+    if(dateSplitted.length < 3) {
+      throw new IllegalArgumentException("Date give is an incorrect format!");
+    }
+    
+    LocalDate parsedDate = null;
+    
+    try {
+      Integer month = Integer.parseInt(dateSplitted[0]);
+      Integer day = Integer.parseInt(dateSplitted[1]);
+      Integer year = Integer.parseInt(dateSplitted[2]);
+      
+      parsedDate = LocalDate.of(year, month, day);
+      
+      
+    }catch(NumberFormatException e) {
+      throw new IllegalArgumentException("Date given is not an integer!");
+    }catch(DateTimeException e) {
+      throw new IllegalArgumentException("Date given is invalid!");
+    }
+    
+    return parsedDate;
   }
 
   private void generateTitle() {
@@ -476,20 +595,131 @@ public class Main extends Application {
     root.setTop(titleBox);
   }
   
+  private void generateDateRangeReportGraph(HashMap<String, Double> dateRangeReport) {
+    
+    // defining the axes
+    final CategoryAxis xAxis = new CategoryAxis(); // plot against time
+    final NumberAxis yAxis = new NumberAxis();
+    xAxis.setLabel("Farms");
+    xAxis.setAnimated(true); // axis animations are removed
+    yAxis.setLabel("Milk Weight Percentage");
+    yAxis.setAnimated(true); // axis animations are removed
+    
+    final LineChart<String, Number> lineChart = new LineChart<>(xAxis, yAxis);
+    
+    lineChart.setAnimated(true);
+    
+    XYChart.Series<String, Number> farm = new XYChart.Series<>();
+    farm.setName("Farms");
+    
+    lineChart.getData().add(farm);
+    
+    Set<String> farmIds = dateRangeReport.keySet();
+    ArrayList<String> farmIdsSorted = new ArrayList<>();
+    
+    for(String farmId: farmIds) {
+      farmIdsSorted.add(farmId);
+    }
+    
+    Collections.sort(farmIdsSorted);
+    
+    
+    for(int i = 0; i < farmIdsSorted.size(); i++) {
+      farm.getData().add(new XYChart.Data<>(farmIdsSorted.get(i), dateRangeReport.get(farmIdsSorted.get(i))));
+    }
+
+    root.setCenter(lineChart);
+    
+  }
+  
+  private void generateMonthlyReportGraph(HashMap<String, Double> monthlyReport) {
+    
+    // defining the axes
+    final CategoryAxis xAxis = new CategoryAxis(); // plot against time
+    final NumberAxis yAxis = new NumberAxis();
+    xAxis.setLabel("Farms");
+    xAxis.setAnimated(true); // axis animations are removed
+    yAxis.setLabel("Milk Weight Percentage");
+    yAxis.setAnimated(true); // axis animations are removed
+    
+    final LineChart<String, Number> lineChart = new LineChart<>(xAxis, yAxis);
+    
+    lineChart.setAnimated(true);
+    
+    XYChart.Series<String, Number> farm = new XYChart.Series<>();
+    farm.setName("Farms");
+    
+    lineChart.getData().add(farm);
+    
+    Set<String> farmIds = monthlyReport.keySet();
+    ArrayList<String> farmIdsSorted = new ArrayList<>();
+    
+    for(String farmId: farmIds) {
+      farmIdsSorted.add(farmId);
+    }
+    
+    Collections.sort(farmIdsSorted);
+    
+    
+    for(int i = 0; i < farmIdsSorted.size(); i++) {
+      farm.getData().add(new XYChart.Data<>(farmIdsSorted.get(i), monthlyReport.get(farmIdsSorted.get(i))));
+    }
+
+    root.setCenter(lineChart);
+    
+  }
+  
+  private void generateAnnualReportGraph(HashMap<String, Double> annualReport) {
+    
+    // defining the axes
+    final CategoryAxis xAxis = new CategoryAxis(); // plot against time
+    final NumberAxis yAxis = new NumberAxis();
+    xAxis.setLabel("Farms");
+    xAxis.setAnimated(true); // axis animations are removed
+    yAxis.setLabel("Milk Weight Percentage");
+    yAxis.setAnimated(true); // axis animations are removed
+    
+    final LineChart<String, Number> lineChart = new LineChart<>(xAxis, yAxis);
+    
+    lineChart.setAnimated(true);
+    
+    XYChart.Series<String, Number> farm = new XYChart.Series<>();
+    farm.setName("Farms");
+    
+    lineChart.getData().add(farm);
+    
+    Set<String> farmIds = annualReport.keySet();
+    ArrayList<String> farmIdsSorted = new ArrayList<>();
+    
+    for(String farmId: farmIds) {
+      farmIdsSorted.add(farmId);
+    }
+    
+    Collections.sort(farmIdsSorted);
+    
+    
+    for(int i = 0; i < farmIdsSorted.size(); i++) {
+      farm.getData().add(new XYChart.Data<>(farmIdsSorted.get(i), annualReport.get(farmIdsSorted.get(i))));
+    }
+
+    root.setCenter(lineChart);
+    
+  }
+  
   private void generateFarmReportGraph(String farmId, ArrayList<Double> percentages) {
     
     // defining the axes
     final CategoryAxis xAxis = new CategoryAxis(); // plot against time
     final NumberAxis yAxis = new NumberAxis();
     xAxis.setLabel("Month");
-    xAxis.setAnimated(false); // axis animations are removed
+    xAxis.setAnimated(true); // axis animations are removed
     yAxis.setLabel("Milk Weight");
-    yAxis.setAnimated(false); // axis animations are removed
+    yAxis.setAnimated(true); // axis animations are removed
 
     // creating the line chart with two axis created above
     final LineChart<String, Number> lineChart = new LineChart<>(xAxis, yAxis);
 
-    lineChart.setAnimated(false); // disable animations
+    lineChart.setAnimated(true); // disable animations
 
     XYChart.Series<String, Number> farm = new XYChart.Series<>();
     farm.setName(farmId);
@@ -497,10 +727,6 @@ public class Main extends Application {
     // add series to chart
     lineChart.getData().add(farm);
 
-    /*farm.getData().add(new XYChart.Data<>("1", 2));
-    farm.getData().add(new XYChart.Data<>("2", 10));
-    farm.getData().add(new XYChart.Data<>("3", 1));*/
-    
     for(int i = 0; i < 12; i++) {
       farm.getData().add(new XYChart.Data<>(Integer.toString(i+1), percentages.get(i)));
     }

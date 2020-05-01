@@ -1,10 +1,13 @@
 package application;
 
+import java.text.DecimalFormat;
 import java.time.DateTimeException;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.MissingFormatArgumentException;
+import java.util.NoSuchElementException;
 import java.util.Set;
 
 /**
@@ -176,12 +179,36 @@ public class FarmGroup {
       
       Double curPercentage = (((double)curMilkWeight) / totalMilkWeightThisMonth) * 100;
       
-      calculatedPercentage.add(Math.round(curPercentage * 100.0) / 100.0);
+      calculatedPercentage.add( (double) Math.round(curPercentage * 100.0) / 100.0);
       
     }
     
     return calculatedPercentage;
   }
+  
+  public int getTotalMilkWeightForAllFarmAndYear(Integer year) throws NoSuchElementException{
+    Set <String> farmIds = farms.keySet();
+    Set <String> filteredFarmIds = new HashSet<>();
+    
+    for(String farmId: farmIds) {
+      try {
+        farms.get(farmId).getMilkWeight(year, 1);
+        filteredFarmIds.add(farmId);
+      }catch(MissingFormatArgumentException e) {
+        // Continue
+      }
+    }
+
+    int totalMilkWeightYear = 0;
+    
+    for(String farmId: filteredFarmIds) {
+      totalMilkWeightYear += farms.get(farmId).getMilkWeight(year);
+    }
+    
+    return totalMilkWeightYear;
+    
+  }
+  
   
   /**
    * Gets the report of a year for every farm
@@ -189,27 +216,66 @@ public class FarmGroup {
    * @param year year to get the report from 
    * @return HashMap of the farms with their respective percentage
    */
-  public HashMap<String, Double> getAnnualReport(Integer year){
+  public HashMap<String, Double> getAnnualReport(Integer year) throws NoSuchElementException{
     Set <String> farmIds = farms.keySet();
+    Set <String> filteredFarmIds = new HashSet<>();
+    
+    for(String farmId: farmIds) {
+      try {
+        farms.get(farmId).getMilkWeight(year, 1);
+        filteredFarmIds.add(farmId);
+      }catch(MissingFormatArgumentException e) {
+        // Continue
+      }
+    }
 
     int totalMilkWeightYear = 0;
     
-    for(String farmId: farmIds) {
+    for(String farmId: filteredFarmIds) {
       totalMilkWeightYear += farms.get(farmId).getMilkWeight(year);
     }
     
     HashMap<String, Double> calculatedPercentage = new HashMap<>();
+    //Double total = 0.0;
     
-    for(String farmId: farmIds) {
+    for(String farmId: filteredFarmIds) {
       int curMilkWeight = farms.get(farmId).getMilkWeight(year);
       
-      Double curPercentage = ((double)curMilkWeight) / totalMilkWeightYear;
+      Double curPercentage = (((double)curMilkWeight) / totalMilkWeightYear) * 100;
       
-      calculatedPercentage.put(farmId, curPercentage);
+      calculatedPercentage.put(farmId, (double)Math.round(curPercentage * 100.0) / 100.0);
+      
+      //total += curPercentage;
+      
     }
+    
+    //System.out.println("total: " + total);
     
     
     return calculatedPercentage;
+  }
+  
+  public int getTotalMilkWeightForAllFarmAndMonth(Integer year, Integer month) throws NoSuchElementException{
+    Set <String> farmIds = farms.keySet();
+    Set <String> filteredFarmIds = new HashSet<>();
+    
+    for(String farmId: farmIds) {
+      try {
+        farms.get(farmId).getMilkWeight(year, 1);
+        filteredFarmIds.add(farmId);
+      }catch(MissingFormatArgumentException e) {
+        // Continue
+      }
+    }
+
+    int totalMilkWeightYearMonth = 0;
+    
+    for(String farmId: filteredFarmIds) {
+      totalMilkWeightYearMonth += farms.get(farmId).getMilkWeight(year, month);
+    }
+    
+    return totalMilkWeightYearMonth;
+    
   }
   
   /**
@@ -221,24 +287,76 @@ public class FarmGroup {
    */
   public HashMap<String, Double> getMonthlyReport(Integer year, Integer month){
     Set<String> farmIds = farms.keySet();
+    Set <String> filteredFarmIds = new HashSet<>();
+    
+    for(String farmId: farmIds) {
+      try {
+        farms.get(farmId).getMilkWeight(year, 1);
+        filteredFarmIds.add(farmId);
+      }catch(MissingFormatArgumentException e) {
+        // Continue
+      }
+    }
     
     int totalMilkWeightYearMonth = 0;
     
-    for(String farmId: farmIds) {
+    for(String farmId: filteredFarmIds) {
       totalMilkWeightYearMonth += farms.get(farmId).getMilkWeight(year, month);
     }
     
     HashMap<String, Double> calculatedPercentage = new HashMap<>();
     
-    for(String farmId: farmIds) {
+    for(String farmId: filteredFarmIds) {
       int curMilkWeight = farms.get(farmId).getMilkWeight(year, month);
       
-      Double curPercentage = ((double)curMilkWeight) / totalMilkWeightYearMonth;
+      Double curPercentage = (((double)curMilkWeight) / totalMilkWeightYearMonth) * 100;
       
-      calculatedPercentage.put(farmId, curPercentage);
+      calculatedPercentage.put(farmId, (double)Math.round(curPercentage * 100.0) / 100.0);
+      
     }
     
     return calculatedPercentage;
+  }
+  
+  public int getTotalMilkWeightForAllFromDateToDate(LocalDate fromDate, LocalDate toDate) throws NoSuchElementException{
+    Set<String> farmIds = farms.keySet();
+    Set <String> filteredFarmIds = new HashSet<>();
+    
+    for(String farmId: farmIds) {
+      try {
+        farms.get(farmId).getMilkWeight(fromDate.getYear(), 1);
+        filteredFarmIds.add(farmId);
+      }catch(MissingFormatArgumentException e) {
+        // Continue
+      }
+    }
+    
+    int totalMilkWeightDateToDate = 0;
+    
+    HashMap<String, Integer> farmTotal = new HashMap<>();
+    
+    while(!fromDate.equals(toDate.plusDays(1))) {
+      for(String farmId: filteredFarmIds) {
+        
+        totalMilkWeightDateToDate += farms.get(farmId).getMilkWeight(fromDate.getYear(), 
+            fromDate.getMonthValue(), fromDate.getDayOfMonth());
+        
+        if(farmTotal.get(farmId) == null) {
+          farmTotal.put(farmId, farms.get(farmId).getMilkWeight(fromDate.getYear(), 
+                  fromDate.getMonthValue(), fromDate.getDayOfMonth()));
+        }else {
+          farmTotal.put(farmId, farmTotal.get(farmId)+farms.get(farmId).getMilkWeight(fromDate.getYear(), 
+                  fromDate.getMonthValue(), fromDate.getDayOfMonth()));
+        }
+        
+      }
+      
+      
+      fromDate = fromDate.plusDays(1);
+    }
+    
+    return totalMilkWeightDateToDate;
+    
   }
   
   /**
@@ -255,13 +373,23 @@ public class FarmGroup {
     }
     
     Set<String> farmIds = farms.keySet();
+    Set <String> filteredFarmIds = new HashSet<>();
+    
+    for(String farmId: farmIds) {
+      try {
+        farms.get(farmId).getMilkWeight(fromDate.getYear(), 1);
+        filteredFarmIds.add(farmId);
+      }catch(MissingFormatArgumentException e) {
+        // Continue
+      }
+    }
     
     int totalMilkWeightDateToDate = 0;
     
     HashMap<String, Integer> farmTotal = new HashMap<>();
     
     while(!fromDate.equals(toDate.plusDays(1))) {
-      for(String farmId: farmIds) {
+      for(String farmId: filteredFarmIds) {
         
         totalMilkWeightDateToDate += farms.get(farmId).getMilkWeight(fromDate.getYear(), 
             fromDate.getMonthValue(), fromDate.getDayOfMonth());
@@ -284,9 +412,9 @@ public class FarmGroup {
     HashMap<String, Double> calculatedPercentage = new HashMap<>();
     
     for(String farmId: farmTotal.keySet()) {
-      Double curPercentage = ((double) (farmTotal.get(farmId)) / totalMilkWeightDateToDate);
+      Double curPercentage = (((double)farmTotal.get(farmId)) / totalMilkWeightDateToDate) * 100;
       
-      calculatedPercentage.put(farmId, curPercentage);
+      calculatedPercentage.put(farmId, (double)Math.round(curPercentage * 100.0) / 100.0);
     }
     
     
